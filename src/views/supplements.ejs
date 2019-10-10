@@ -10,6 +10,43 @@
   <title>Document</title>
 
   <script src="https://d3js.org/d3.v3.min.js"></script>
+
+  <style>
+
+  svg {
+      font: 12px sans-serif;
+  }
+
+  text {
+      pointer-events: none;
+  }
+
+  .inner_node rect {
+      pointer-events: all;
+  }
+
+  .inner_node rect.highlight {
+      stroke: #315B7E;
+      stroke-width: 2px;
+  }
+
+  .outer_node circle {
+      fill: #fff;
+      stroke: steelblue;
+      stroke-width: 1.5px;
+      pointer-events: all;
+  }
+
+  .outer_node circle.highlight
+  {
+      stroke: #315B7E;
+      stroke-width: 2px;
+  }
+
+  .link {
+      fill: none;
+  }
+  </style>
 </head>
 
 <body>
@@ -119,6 +156,11 @@
             data.push(jsondata)
             console.log("Data: ", data)
             var dataObject = transformData(data)
+
+            var svgElement = document.getElementById("vis")
+            if(svgElement)
+                svgElement.remove()
+
 
             draw(dataObject)
           }
@@ -294,9 +336,9 @@
                                       "y": d.outer.x > 180 ? d.inner.x : d.inner.x + rect_width}; })
         .projection(function(d) { return [d.y, d.x]; });
 
-    console.log(d3.select("#vis-div"))
     var svg = d3.select("#vis-div")
         .append("svg")
+        .attr("id", "vis")
         .attr("width", diameter)
         .attr("height", diameter)
       .append("g")
