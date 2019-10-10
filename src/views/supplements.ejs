@@ -74,13 +74,14 @@
       <div class="pre-scrollable" id="button-div" style="overflow-y: scroll; height:100px; width: auto;">
       </div>
     <div class="row">
-      <div class="col-md-2">
+      <div class="col-md-2" id="supplement-side-div">
         <h4>Supplement</h4>
+
       </div>
       <div id="vis-div" class="col-md-8 text-center">
         <h4>Visualizations over here</h4>
       </div>
-      <div class="col-md-2">
+      <div class="col-md-2" id="drug-side-div">
         <h4>Drug</h4>
       </div>
     </div>
@@ -126,6 +127,8 @@
     }
     if(refresh)
         queryMedSupplements(drug_list, sup_list);
+
+
     $("#name-field").val("");
   }
 
@@ -462,6 +465,21 @@
             d3.select('#' + d.related_links[i]).attr('stroke-width', link_width);
     }
 
+  }
+
+  function AddToSideList(ListSupp, ListMed)
+  {
+    $("#supplement-side-div").empty()
+    $("#supplement-side-div").append("<h4>Supplements</h4>")
+    $("#drug-side-div").empty()
+    $("#drug-side-div").append("<h4>Drug</h4>")
+    ListSupp.forEach(function(item){
+        $("#supplement-side-div").append("<div class='col-md-12'>"+item+"</div>");
+    })
+
+    ListMed.forEach(function(item){
+        $("#drug-side-div").append("<div class='col-md-12'>"+item+"</div>");
+    })
   }
 
 </script>
