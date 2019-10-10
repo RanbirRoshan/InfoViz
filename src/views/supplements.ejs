@@ -26,7 +26,6 @@
           <div class="form-group">
             <input class="form-control" list="supplements" name="name" id="name-field">
             <datalist id="supplements">
-
             </datalist>
           </div>
         </div>
@@ -57,8 +56,14 @@
 </body>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script>
+  // var drug_list = <%= drug %>
+  //   drug_list.forEach(function (item) {
+  //     console.log(item);
+  //   })
   $(document).ready(function () {
+
     $("#name-field").on("change keydown paste input", function () {
+      // console.log(supp, drug);
       var type = $("#select-field").val();
       var type_val;
       if (type == "Supplement") {
@@ -66,13 +71,14 @@
       } else {
         type_val = 2
       }
+      var name_field = $("#name-field").val();
       console.log(type_val);
 
       $.ajax({
         type: 'GET',
         crossDomain: true,
         // dataType: 'jsonp',
-        url: 'http://localhost:8080/KeyWords?type=' + type_val + '&name=ab',
+        url: 'http://localhost:8080/KeyWords?type=' + type_val + '&name=' + name_field,
         success: function (jsondata) {
 
           $("#supplements").empty();
@@ -85,9 +91,7 @@
       })
     });
   })
-  // function getKeyWords() {
 
-  // }
 </script>
 
 </html>
