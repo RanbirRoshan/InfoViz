@@ -56,12 +56,14 @@
 </body>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script>
-  // var drug_list = <%= drug %>
-  //   drug_list.forEach(function (item) {
-  //     console.log(item);
-  //   })
   $(document).ready(function () {
+    var drug_list= [<% drug.forEach(function(item){ %>
+                              "<%= item.name %>",
+                               <% }) %>]
 
+    var sup_list= [<% supp.forEach(function(item){ %>
+                              "<%= item.name %>",
+                               <% }) %>]
     $("#name-field").on("change keydown paste input", function () {
       // console.log(supp, drug);
       var type = $("#select-field").val();
@@ -90,7 +92,15 @@
         }
       })
     });
+
+    dummy(drug_list, sup_list);
   })
+
+  function dummy (list1, list2){
+    list1.forEach(function (item){
+    console.log(item)
+    })
+  }
 
 </script>
 
