@@ -29,12 +29,19 @@ exports.KeyWordSearch = function (res, type, SearchPrifix, WordCount, driver) {
 
 
 //var session = driver.session();
-exports.MedDSInteraction = function (medList, DSList, driver) {
-    if (medList.length == 0 || DSList.length == 0)
-        return []
+exports.MedDSInteraction = function (medList, DSList, response, driver) {
+    medList= medList.split(",")
+    DSList = DSList.split(",")
+    list = []
+    if (medList.length == 0 || DSList.length == 0) {
+        response.send(list)
+        return
+    }
 
-    if (medList.length != 1 && DSList.length != 1)
-        return []
+    if (medList.length != 1 && DSList.length != 1) {
+        response.send(list)
+        return
+    }
 
     var session = driver.session();
 
@@ -46,24 +53,18 @@ exports.MedDSInteraction = function (medList, DSList, driver) {
             '-[:interacts_with]->(c) where c.name in $MedList  RETURN c', { MedList: medList, SupName: DSList[0] })
     }
     ret.then(function (result) {
-        //  result.records.forEach(function (data) {
-        //      list.push(data._fields[0].properties.name)
-        //      //console.log(data._fields[0].properties.name);
-        // })
-        // list.forEach(function(item)
-        // {
-        //    // res.write(item)
-        // })
-        // res.send(list)
+         result.records.forEach(function (data) {
+             list.push(data._fields[0].properties.name)
+        })
         console.log(result)
-        res.send()
+        response.send(list)
         session.close();
     }
     )
-        .catch(function (err) {
-            console.log(err.toString())
-        }
-        )
+    .catch(function (err) {
+        console.log(err.toString())
+    }
+    )
 }
 
 exports.pingServer = function (req, res, driver) {

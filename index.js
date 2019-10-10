@@ -53,6 +53,10 @@ app.post("/app", function (req, res) {
     res.render("supplements", { supp: supp, drug: drug });
 })
 
+app.get("/SupVsMed", function (req, res) {
+    console.log("abcd")
+    dbUtil.MedDSInteraction(req.query.drug, req.query.supp, res, driver);
+})
 
 
 app.listen(8080);
