@@ -71,7 +71,8 @@
           <button onclick="AddNewEntry()" class="btn btn-primary">Add</button>
         </div>
       </div>
-
+      <div class="pre-scrollable" id="button-div" style="overflow-y: scroll; height:100px; width: auto;">
+      </div>
     <div class="row">
       <div class="col-md-2">
         <h4>Supplement</h4>
@@ -90,14 +91,42 @@
   var drug_list = []
   var sup_list  = []
 
-  function AddNewEntry(){
-    if ($("#select-field").val() == "Supplement") {
-        sup_list.push($("#name-field").val())
-    } else {
-        drug_list.push($("#name-field").val())
-    }
+  function RemoveFromSupList(val1, elem){
+    sup_list = sup_list.filter(function(item){
+           return item != val1;
+    });
+    elem.remove();
 
     queryMedSupplements(drug_list, sup_list);
+  }
+  function RemoveFromDrugList(val1, elem){
+      drug_list = drug_list.filter(function(item){
+             return item != val1;
+      });
+      elem.remove();
+
+      queryMedSupplements(drug_list, sup_list);
+    }
+
+  function AddNewEntry(){
+    var refresh = false;
+    if ($("#select-field").val() == "Supplement") {
+        if (sup_list.indexOf($("#name-field").val())==-1){
+            refresh = true;
+            sup_list.push($("#name-field").val())
+            $("#button-div").append('<button type="button" onclick = "RemoveFromSupList(\''+ $("#name-field").val() +'\', this)" id = \"'+ $("#name-field").val() +'\" class="btn btn-outline-warning btn-rounded waves-effect"><i class="fas fa-car pr-2" aria-hidden="true"></i>'+$("#name-field").val()+'</button>')
+        }
+    } else {
+
+        if (drug_list.indexOf($("#name-field").val())==-1){
+            refresh = true;
+            drug_list.push($("#name-field").val())
+            $("#button-div").append('<button type="button" onclick = "RemoveFromDrugList(\''+ $("#name-field").val() +'\', this)" id = \"'+ $("#name-field").val() +'\"  class="btn btn-outline-danger btn-rounded waves-effect"><i class="fas fa-car pr-2" aria-hidden="true"></i>'+$("#name-field").val()+'</button>')
+        }
+    }
+    if(refresh)
+        queryMedSupplements(drug_list, sup_list);
+    $("#name-field").val("");
   }
 
   $(document).ready(function () {
