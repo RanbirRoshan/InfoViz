@@ -257,8 +257,41 @@
         return 0
     })
 
+    var outerInteractive = new Set()
+    var innerNonInteractive = new Set(), outerNonInteractive = new Set()
+    var innerNonInteractiveIndexes = []
 
-    // console.log("Inner: ", inner)
+    inner.forEach((innerElement, index) => {
+      
+      if(innerElement.related_links.length == 0){ // The inner Meds donot have any links => non-interactive
+        innerNonInteractive.add(innerElement)
+        innerNonInteractiveIndexes.push(index)
+      } else { // Else they have some links to DSs and add those DSs to a set
+        outerInteractive.add(new Set(innerElement.related_nodes.slice(1,innerElement.related_nodes.length))) 
+      }
+
+      // Remove all the non-interactive indexes from the inner
+      innerNonInteractiveIndexes.forEach((innerNonInteractiveIndex) => {
+        inner.splice(innerNonInteractiveIndex, 1)
+      })
+
+
+      function difference(setA, setB) {
+        var _difference = new Set(setA);
+        for (var elem of setB) {
+            _difference.delete(elem);
+        }
+        return _difference;
+      }
+
+      outerNonInteractive = difference(new Set(sup_list), outerInteractive)
+
+      
+
+
+    })
+
+    innerNonInteractive = 
 
     data = {
       inner: inner,
@@ -266,6 +299,8 @@
       links: links
     }
 
+    console.log("Inner: ", inner)
+    console.log("Outer: ", outer)
     return data
   }
 
@@ -277,6 +312,7 @@
 
     // sort the data -- TODO: have multiple sort options
     outer = data.outer;
+    inner = data.inner;
     data.outer = Array(outer.length);
 
 
