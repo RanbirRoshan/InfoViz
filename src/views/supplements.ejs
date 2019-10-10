@@ -46,6 +46,16 @@
   .link {
       fill: none;
   }
+  .supplement-div{
+  border: 1px solid #ff9900;
+  padding:5px 25px;
+  margin-bottom:5px;
+  }
+  .drug-div{
+    border: 1px solid #009999;
+    padding:5px 25px;
+    margin-bottom:5px;
+    }
   </style>
 </head>
 
@@ -128,7 +138,7 @@
     if(refresh)
         queryMedSupplements(drug_list, sup_list);
 
-
+    AddToSideList(sup_list, drug_list)
     $("#name-field").val("");
   }
 
@@ -510,11 +520,11 @@
     $("#drug-side-div").empty()
     $("#drug-side-div").append("<h4>Drug</h4>")
     ListSupp.forEach(function(item){
-        $("#supplement-side-div").append("<div class='col-md-12'>"+item+"</div>");
+        $("#supplement-side-div").append("<div class='col-md-12 supplement-div'>"+item+"</div>");
     })
 
     ListMed.forEach(function(item){
-        $("#drug-side-div").append("<div class='col-md-12'>"+item+"</div>");
+        $("#drug-side-div").append("<div class='col-md-12 drug-div'>"+item+"</div>");
     })
   }
 

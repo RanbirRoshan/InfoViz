@@ -8,8 +8,7 @@ var neo4j = require('neo4j-driver').v1;
 var app = express();
 var cors = require('cors');
 
-var driver = neo4j.driver("bolt://168.168.43.5:7687");
-
+var driver = neo4j.driver("bolt://localhost:7687");
 
 app.set("views", path.join(__dirname, "/src/views"))
 app.set("view engine", "ejs")
