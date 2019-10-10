@@ -8,11 +8,12 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <title>Document</title>
+
+  <script src="https://d3js.org/d3.v3.min.js"></script>
 </head>
 
 <body>
   <div class="container-fluid">
-    <form method="post" action="/app">
       <div class="row mt-4">
         <div class="col-md-4">
           <div class="form-group ">
@@ -24,46 +25,45 @@
         </div>
         <div class="col-md-4">
           <div class="form-group">
-            <input class="form-control" list="supplements" name="name" id="name-field">
+            <input class="form-control" list="supplements" name="name" id="name-field" autocomplete="off">
             <datalist id="supplements">
             </datalist>
           </div>
         </div>
         <div class="col-md-2">
-          <button type="submit" class="btn btn-primary">Add</button>
+          <button onclick="AddNewEntry()" class="btn btn-primary">Add</button>
         </div>
       </div>
-    </form>
+
     <div class="row">
       <div class="col-md-2">
         <h4>Supplement</h4>
-        <% supp.forEach(function(item){ %>
-
-        <%= item.name %>
-        <% }) %>
       </div>
-      <div class="col-md-8 text-center">
+      <div id="vis-div" class="col-md-8 text-center">
         <h4>Visualizations over here</h4>
       </div>
       <div class="col-md-2">
         <h4>Drug</h4>
-        <% drug.forEach(function(item){ %>
-        <%= item.name %>
-        <% }) %>
       </div>
     </div>
   </div>
 </body>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script>
-  $(document).ready(function () {
-    var drug_list= [<% drug.forEach(function(item){ %>
-                              "<%= item.name %>",
-                               <% }) %>]
+  var drug_list = []
+  var sup_list  = []
 
-    var sup_list= [<% supp.forEach(function(item){ %>
-                              "<%= item.name %>",
-                               <% }) %>]
+  function AddNewEntry(){
+    if ($("#select-field").val() == "Supplement") {
+        sup_list.push($("#name-field").val())
+    } else {
+        drug_list.push($("#name-field").val())
+    }
+
+    queryMedSupplements(drug_list, sup_list);
+  }
+
+  $(document).ready(function () {
     $("#name-field").on("change keydown paste input", function () {
       // console.log(supp, drug);
       var type = $("#select-field").val();
@@ -74,7 +74,7 @@
         type_val = 2
       }
       var name_field = $("#name-field").val();
-      console.log(type_val);
+      // console.log(type_val);
 
       $.ajax({
         type: 'GET',
@@ -86,20 +86,311 @@
           $("#supplements").empty();
 
           $.each(jsondata, function (key, value) {
-            console.log(value);
+            // console.log(value);
             $("#supplements").append("<option value=\"" + value + "\">")
           })
         }
       })
     });
 
-    dummy(drug_list, sup_list);
+    
   })
 
-  function dummy (list1, list2){
-    list1.forEach(function (item){
-    console.log(item)
+
+  function queryMedSupplements(meds, supplements){
+    var onMeds = true
+    var data = []
+    var unLinkedMeds = [], unLinkedSupplements = []
+
+    if(onMeds){
+      var medSupplementsPair = []
+      var supplementsResponse = null
+      supplementsString = supplements.join(",")
+
+      meds.forEach(med => {
+        console.log("Request for: ", med)
+
+        $.ajax({
+          type: 'GET',
+          crossDomain: true,
+          // dataType: 'jsonp',
+          url: 'http://localhost:8080/SupVsMed?drug=' + med + '&supp=' + supplementsString,
+          success: function (jsondata) {
+            data.push(jsondata)
+            console.log("Data: ", data)
+            var dataObject = transformData(data)
+
+            draw(dataObject)
+          }
+        })
+      })
+    }
+    console.log("Data Arr: ", data)
+  }
+
+  function transformData(data){
+    var outer = d3.map();
+    var inner = [];
+    var links = [];
+
+    var outerId = [0];
+
+    data.forEach(function(d){
+      
+      if (d == null)
+        return;
+      
+      i = { id: 'i' + inner.length, name: d[0], related_links: [] };
+      i.related_nodes = [i.id];
+      inner.push(i);
+      
+      if (!Array.isArray(d[1]))
+        d[1] = [d[1]];
+      
+      d[1].forEach(function(d1){
+        
+        o = outer.get(d1);
+        
+        if (o == null)
+        {
+          o = { name: d1,	id: 'o' + outerId[0], related_links: [] };
+          o.related_nodes = [o.id];
+          outerId[0] = outerId[0] + 1;	
+          
+          outer.set(d1, o);
+        }
+        
+        // create the links
+        l = { id: 'l-' + i.id + '-' + o.id, inner: i, outer: o }
+        links.push(l);
+        
+        // and the relationships
+        i.related_nodes.push(o.id);
+        i.related_links.push(l.id);
+        o.related_nodes.push(i.id);
+        o.related_links.push(l.id);
+      });
+    });
+
+    // Sort the inner entity according to the number of interactions with the outer entity 
+    inner.sort(function(inner1, inner2) {
+        if(inner1.related_links.length > inner2.related_links.length)
+            return -1
+        
+        if(inner2.related_links.length > inner1.related_links.length)
+            return 1
+
+        return 0
     })
+
+
+    // console.log("Inner: ", inner)
+
+    data = {
+      inner: inner,
+      outer: outer.values(),
+      links: links
+    }
+
+    return data
+  }
+
+  // Drawing the visualization
+  function draw(data){
+    var innerMin = data.inner[0].related_links.length
+    var innerMax = data.inner[data.inner.length - 1].related_links.length
+
+
+    // sort the data -- TODO: have multiple sort options
+    outer = data.outer;
+    data.outer = Array(outer.length);
+
+
+    var i1 = 0;
+    var i2 = outer.length - 1;
+
+    for (var i = 0; i < data.outer.length; ++i)
+    {
+      if (i % 2 == 1)
+        data.outer[i2--] = outer[i];
+      else
+        data.outer[i1++] = outer[i];
+    }
+
+    console.log(data.outer.reduce(function(a,b) { return a + b.related_links.length; }, 0) / data.outer.length);
+
+
+    // from d3 colorbrewer: 
+    // This product includes color specifications and designs developed by Cynthia Brewer (http://colorbrewer.org/).
+    var colors = ["#a50026","#d73027","#f46d43","#fdae61","#fee090","#ffffbf","#e0f3f8","#abd9e9","#74add1","#4575b4","#313695"]
+    var colorsMin = 0, colorsMax = colors.length
+
+    var color = d3.scale.linear()
+        .domain([60, 220])
+        .range([colors.length-1, 0])
+        .clamp(true);
+
+    var diameter = 960;
+    var rect_width = 40;
+    var rect_height = 14;
+
+    var link_width = "1px"; 
+
+    var il = data.inner.length;
+    var ol = data.outer.length;
+
+    var inner_y = d3.scale.linear()
+        .domain([0, il])
+        .range([-(il * rect_height)/2, (il * rect_height)/2]);
+
+    mid = (data.outer.length/2.0)
+    var outer_x = d3.scale.linear()
+        .domain([0, mid, mid, data.outer.length])
+        .range([15, 170, 190 ,355]);
+
+    var outer_y = d3.scale.linear()
+        .domain([0, data.outer.length])
+        .range([0, diameter / 2 - 120]);
+
+
+    // setup positioning
+    data.outer = data.outer.map(function(d, i) { 
+        d.x = outer_x(i);
+        d.y = diameter/3;
+        return d;
+    });
+
+    data.inner = data.inner.map(function(d, i) { 
+        d.x = -(rect_width / 2);
+        d.y = inner_y(i);
+        return d;
+    });
+
+
+    function get_color(length, linksMin, linksMax)
+    {   
+        var c = Math.round(( ((length - linksMin) * (colorsMax - colorsMin))/ (linksMax - linksMin) ) + colorsMin);
+        // console.log("Color Index: ", c)
+        if (isNaN(c))
+            return '#dddddd';	// fallback color
+        
+        return colors[c];
+    }
+
+    // Can't just use d3.svg.diagonal because one edge is in normal space, the
+    // other edge is in radial space. Since we can't just ask d3 to do projection
+    // of a single point, do it ourselves the same way d3 would do it.  
+
+
+    function projectX(x)
+    {
+        return ((x - 90) / 180 * Math.PI) - (Math.PI/2);
+    }
+
+    var diagonal = d3.svg.diagonal()
+        .source(function(d) { return {"x": d.outer.y * Math.cos(projectX(d.outer.x)), 
+                                      "y": -d.outer.y * Math.sin(projectX(d.outer.x))}; })            
+        .target(function(d) { return {"x": d.inner.y + rect_height/2,
+                                      "y": d.outer.x > 180 ? d.inner.x : d.inner.x + rect_width}; })
+        .projection(function(d) { return [d.y, d.x]; });
+
+    console.log(d3.select("#vis-div"))
+    var svg = d3.select("#vis-div")
+        .append("svg")
+        .attr("width", diameter)
+        .attr("height", diameter)
+      .append("g")
+        .attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
+        
+
+    // links
+    var link = svg.append('g').attr('class', 'links').selectAll(".link")
+        .data(data.links)
+      .enter().append('path')
+        .attr('class', 'link')
+        .attr('id', function(d) { return d.id })
+        .attr("d", diagonal)
+        .attr('stroke', function(d) { return get_color(d.inner.related_links.length, innerMin, innerMax); })
+        .attr('stroke-width', link_width);
+
+    // outer nodes
+
+    var onode = svg.append('g').selectAll(".outer_node")
+        .data(data.outer)
+      .enter().append("g")
+        .attr("class", "outer_node")
+        .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
+        .on("mouseover", mouseover)
+        .on("mouseout", mouseout);
+      
+    onode.append("circle")
+        .attr('id', function(d) { return d.id })
+        .attr("r", 4.5);
+      
+    // onode.append("circle")
+    //     .attr('r', 20)
+    //     .attr('visibility', 'hidden');
+      
+    onode.append("text")
+      .attr('id', function(d) { return d.id + '-txt'; })
+        .attr("dy", ".31em")
+        .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
+        .attr("transform", function(d) { return d.x < 180 ? "translate(8)" : "rotate(180)translate(-8)"; })
+        .text(function(d) { return d.name; });
+      
+    // inner nodes
+      
+    var inode = svg.append('g').selectAll(".inner_node")
+        .data(data.inner)
+      .enter().append("g")
+        .attr("class", "inner_node")
+        .attr("transform", function(d, i) { return "translate(" + d.x + "," + d.y + ")"})
+        .on("mouseover", mouseover)
+        .on("mouseout", mouseout);
+      
+    inode.append('rect')
+        .attr('width', rect_width)
+        .attr('height', rect_height)
+        .attr('id', function(d) { return d.id; })
+        .attr('fill', function(d) { return get_color(d.related_links.length, innerMin, innerMax); });
+      
+    inode.append("text")
+      .attr('id', function(d) { return d.id + '-txt'; })
+        .attr('text-anchor', 'middle')
+        .attr("transform", "translate(" + rect_width/2 + ", " + rect_height * .75 + ")")
+        .text(function(d) { return d.name; });
+
+    // need to specify x/y/etc
+
+    d3.select(self.frameElement).style("height", diameter - 150 + "px");
+
+    function mouseover(d)
+    {
+      // bring to front
+      d3.selectAll('.links .link').sort(function(a, b){ return d.related_links.indexOf(a.id); });	
+      
+        for (var i = 0; i < d.related_nodes.length; i++)
+        {
+            d3.select('#' + d.related_nodes[i]).classed('highlight', true);
+            d3.select('#' + d.related_nodes[i] + '-txt').attr("font-weight", 'bold');
+        }
+        
+        for (var i = 0; i < d.related_links.length; i++)
+            d3.select('#' + d.related_links[i]).attr('stroke-width', '5px');
+    }
+
+    function mouseout(d)
+    {   	
+        for (var i = 0; i < d.related_nodes.length; i++)
+        {
+            d3.select('#' + d.related_nodes[i]).classed('highlight', false);
+            d3.select('#' + d.related_nodes[i] + '-txt').attr("font-weight", 'normal');
+        }
+        
+        for (var i = 0; i < d.related_links.length; i++)
+            d3.select('#' + d.related_links[i]).attr('stroke-width', link_width);
+    }
+
   }
 
 </script>

@@ -32,6 +32,9 @@ exports.KeyWordSearch = function (res, type, SearchPrifix, WordCount, driver) {
 exports.MedDSInteraction = function (medList, DSList, response, driver) {
     medList= medList.split(",")
     DSList = DSList.split(",")
+
+    console.log("DSList: ", DSList)
+    console.log("DSList: ", medList)
     list = []
     if (medList.length == 0 || DSList.length == 0) {
         response.send(list)
@@ -46,9 +49,13 @@ exports.MedDSInteraction = function (medList, DSList, response, driver) {
     var session = driver.session();
 
     if (medList.length == 1) {
+        var primary = medList[0]
+
         var ret = session.run('MATCH (a:DSP)-[:has_ingredient]->(b)-[:interacts_with]->(c:SPD{name:$SPDName}) ' +
             'where a.name in $SupList  RETURN a', { SupList: DSList, SPDName: medList[0] })
     } else {
+        var primary = DSList[0]
+
         var ret = session.run('MATCH (a:DSP{name:$SupName})-[:has_ingredient]->(b)' +
             '-[:interacts_with]->(c) where c.name in $MedList  RETURN c', { MedList: medList, SupName: DSList[0] })
     }
@@ -57,7 +64,7 @@ exports.MedDSInteraction = function (medList, DSList, response, driver) {
              list.push(data._fields[0].properties.name)
         })
         console.log(result)
-        response.send(list)
+        response.send([primary, Array.from(new Set(list))])
         session.close();
     }
     )
