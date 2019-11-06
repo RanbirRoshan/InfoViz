@@ -7,11 +7,22 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
   <title>Document</title>
 
   <script src="https://d3js.org/d3.v3.min.js"></script>
 
   <style>
+  body{
+  font-family: 'Source Sans Pro', sans-serif;
+
+  }
+
+  h1 { font-family: Georgia; font-size: 27px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 29.7px; }
+  h3 { font-family: Georgia,Times,Times New Roman,serif; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 15.4px; }
+  p { font-family: Georgia,Times,Times New Roman,serif; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 19.99px; }
+  blockquote { font-family: Georgia,Times,Times New Roman,serif; font-size: 21px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 29.99px; }
+  pre { font-family: Georgia,Times,Times New Roman,serif; font-size: 13px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 18.57px; }
 
   svg {
       font: 12px sans-serif;
@@ -60,6 +71,27 @@
 </head>
 
 <body>
+<div style="height: 35px; width: 100%; background-color: white;" >
+    <table style="padding: 5px">
+        <tr style="width: 100%">
+            <td style="width: 80%; vertical-align: bottom">
+                <h1>WebSite Name</h1>
+            </td>
+            <td style="width: 5%; vertical-align: bottom">
+                <center><h3>Home</h3></center>
+            </td>
+            <td style="width: 5%; vertical-align: bottom">
+                <center><h3>Interaction</h3></center>
+            </td>
+            <td style="width: 5%; vertical-align: bottom">
+                <center><h3>Details</h3></center>
+            </td>
+            <td style="width: 5%; vertical-align: bottom">
+                <center><h3>About</h3></center>
+            </td>
+        </tr>
+    </table>
+</div>
   <div class="container-fluid">
       <div class="row mt-4">
         <div class="col-md-4">
@@ -138,7 +170,7 @@
     if(refresh)
         queryMedSupplements(drug_list, sup_list);
 
-    AddToSideList(sup_list, drug_list)
+    //AddToSideList(sup_list, drug_list)
     $("#name-field").val("");
   }
 
@@ -185,6 +217,9 @@
       var medSupplementsPair = []
       var supplementsResponse = null
       supplementsString = supplements.join(",")
+
+      if (meds.length < 1)
+        AddToSideList(sup_list, drug_list);
 
       meds.forEach(med => {
         console.log("Request for: ", med)
@@ -272,9 +307,9 @@
     var innerNonInteractiveIndexes = []
 
     inner.forEach((innerElement, index) => {
-      
+      console.log("Inner Element: ", innerElement)
       if(innerElement.related_links.length == 0){ // The inner Meds donot have any links => non-interactive
-        innerNonInteractive.add(innerElement)
+        innerNonInteractive.add(innerElement.name)
         innerNonInteractiveIndexes.push(index)
       } else { // Else they have some links to DSs and add those DSs to a set
         outerInteractive.add(new Set(innerElement.related_nodes.slice(1,innerElement.related_nodes.length))) 
@@ -295,13 +330,14 @@
       }
 
       outerNonInteractive = difference(new Set(sup_list), outerInteractive)
+      console.log("outer non interactive: ", outerNonInteractive)
+      console.log("inner non interactive: ", innerNonInteractive)
 
-      
+      console.log("Function call")
 
+      AddToSideList(Array.from(outerNonInteractive), Array.from(innerNonInteractive))
 
     })
-
-    innerNonInteractive = 
 
     data = {
       inner: inner,
@@ -316,8 +352,12 @@
 
   // Drawing the visualization
   function draw(data){
-    var innerMin = data.inner[0].related_links.length
-    var innerMax = data.inner[data.inner.length - 1].related_links.length
+    var innerMin, innerMax
+
+    if(data.inner[0]){
+        innerMin = data.inner[0].related_links.length
+        innerMax = data.inner[data.inner.length - 1].related_links.length
+    }
 
 
     // sort the data -- TODO: have multiple sort options
@@ -351,8 +391,8 @@
         .clamp(true);
 
     var diameter = 960;
-    var rect_width = 40;
-    var rect_height = 14;
+    var rect_width = 150;
+    var rect_height = 25;
 
     var link_width = "1px"; 
 
