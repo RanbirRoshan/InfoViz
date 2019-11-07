@@ -80,6 +80,10 @@ app.get("/detail", function (req, res) {
     console.log("Detail api called")
     dbUtil.GetItemDetails(res, req.query.type, req.query.name, driver)
 })
+app.get('/dsp', function (req, res) {
+    res.render('dsp');
+})
+
 
 app.get('/details', function (req, res) {
     res.render('details');
