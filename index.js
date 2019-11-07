@@ -104,6 +104,21 @@ app.get('/drugs', function (req, res) {
     res.render('drugs');
 })
 
+app.get("/DSPInteractWithDrug", function (req, res) {
+    console.log("DSPInteractWithDrug api called")
+    dbUtil.DSPInteractWithDrug(res, req.query.name, driver)
+})
+
+app.get("/DSPIngredients", function (req, res) {
+    console.log("DSPIngredients api called")
+    dbUtil.DSPIngredients(res, req.query.name, driver)
+})
+
+app.get("/DSPAdverseReaction", function (req, res) {
+    console.log("DSPAdverseReaction api called")
+    dbUtil.DSPAdverseReaction(res, req.query.name, driver)
+})
+
 app.listen(8080);
 console.log("server started")
 module.exports = app

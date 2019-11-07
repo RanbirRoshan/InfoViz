@@ -1,3 +1,5 @@
+<script src="https://d3js.org/d3.v3.min.js"></script>
+
 <style>
   h1 {
     font-family: Georgia;
@@ -464,6 +466,7 @@
 
     var diagonal = d3.svg.diagonal()
       .source(function (d) {
+        console.log("Diagonal: ", d)
         return {
           "x": d.outer.y * Math.cos(projectX(d.outer.x)),
           "y": -d.outer.y * Math.sin(projectX(d.outer.x))

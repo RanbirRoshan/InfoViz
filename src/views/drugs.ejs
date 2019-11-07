@@ -249,6 +249,9 @@
         .attr("fill", color)
         .call(drag(simulation));
 
+        node.append("title")
+        		.text(d => d.id);
+
       var texts = svg.selectAll("text.label")
         .data(nodes)
         .enter().append("text")
