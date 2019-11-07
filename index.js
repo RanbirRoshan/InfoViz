@@ -7,9 +7,10 @@ var bodyParser = require("body-parser")
 var neo4j = require('neo4j-driver').v1;
 var app = express();
 var cors = require('cors');
+var expressLayouts = require('express-ejs-layouts');
 
-var driver = neo4j.driver("bolt://localhost:7687");
-
+var driver = neo4j.driver("bolt://192.168.0.50:7687");
+app.use(expressLayouts);
 app.set("views", path.join(__dirname, "/src/views"))
 app.set("view engine", "ejs")
 app.use(logger('dev'))
@@ -19,6 +20,7 @@ app.use(express.static(path.join(__dirname, "public")))
 app.use(cors())
 app.get("/", function (req, res) {
     dbUtil.pingServer(req, res, driver)
+    // res.render('details');
 })
 
 app.get("/KeyWords", function (req, res) {
@@ -56,6 +58,10 @@ app.post("/app", function (req, res) {
 app.get("/SupVsMed", function (req, res) {
     console.log("abcd")
     dbUtil.MedDSInteraction(req.query.drug, req.query.supp, res, driver);
+})
+
+app.get('/details', function (req, res) {
+    res.render('details');
 })
 
 

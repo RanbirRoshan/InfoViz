@@ -1,120 +1,134 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap" rel="stylesheet">
-  <title>Document</title>
-
-  <script src="https://d3js.org/d3.v3.min.js"></script>
-
-  <style>
-  body{
-  font-family: 'Source Sans Pro', sans-serif;
-
+<style>
+  h1 {
+    font-family: Georgia;
+    font-size: 27px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 700;
+    line-height: 29.7px;
   }
 
-  h1 { font-family: Georgia; font-size: 27px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 29.7px; }
-  h3 { font-family: Georgia,Times,Times New Roman,serif; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 700; line-height: 15.4px; }
-  p { font-family: Georgia,Times,Times New Roman,serif; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 19.99px; }
-  blockquote { font-family: Georgia,Times,Times New Roman,serif; font-size: 21px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 29.99px; }
-  pre { font-family: Georgia,Times,Times New Roman,serif; font-size: 13px; font-style: normal; font-variant: normal; font-weight: 400; line-height: 18.57px; }
+  h3 {
+    font-family: Georgia, Times, Times New Roman, serif;
+    font-size: 14px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 700;
+    line-height: 15.4px;
+  }
+
+  p {
+    font-family: Georgia, Times, Times New Roman, serif;
+    font-size: 14px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 19.99px;
+  }
+
+  blockquote {
+    font-family: Georgia, Times, Times New Roman, serif;
+    font-size: 21px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 29.99px;
+  }
+
+  pre {
+    font-family: Georgia, Times, Times New Roman, serif;
+    font-size: 13px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 400;
+    line-height: 18.57px;
+  }
 
   svg {
-      font: 12px sans-serif;
+    font: 12px sans-serif;
   }
 
   text {
-      pointer-events: none;
+    pointer-events: none;
   }
 
   .inner_node rect {
-      pointer-events: all;
+    pointer-events: all;
   }
 
   .inner_node rect.highlight {
-      stroke: #315B7E;
-      stroke-width: 2px;
+    stroke: #315B7E;
+    stroke-width: 2px;
   }
 
   .outer_node circle {
-      fill: #fff;
-      stroke: steelblue;
-      stroke-width: 1.5px;
-      pointer-events: all;
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+    pointer-events: all;
   }
 
-  .outer_node circle.highlight
-  {
-      stroke: #315B7E;
-      stroke-width: 2px;
+  .outer_node circle.highlight {
+    stroke: #315B7E;
+    stroke-width: 2px;
   }
 
   .link {
-      fill: none;
+    fill: none;
   }
-  .supplement-div{
-  border: 1px solid #ff9900;
-  padding:5px 25px;
-  margin-bottom:5px;
+
+  .supplement-div {
+    border: 1px solid #ff9900;
+    padding: 5px 25px;
+    margin-bottom: 5px;
   }
-  .drug-div{
+
+  .drug-div {
     border: 1px solid #009999;
-    padding:5px 25px;
-    margin-bottom:5px;
-    }
-  </style>
+    padding: 5px 25px;
+    margin-bottom: 5px;
+  }
+</style>
 </head>
 
 <body>
-<div style="height: 35px; width: 100%; background-color: white;" >
-    <table style="padding: 5px">
-        <tr style="width: 100%">
-            <td style="width: 80%; vertical-align: bottom">
-                <h1>WebSite Name</h1>
-            </td>
-            <td style="width: 5%; vertical-align: bottom">
-                <center><h3>Home</h3></center>
-            </td>
-            <td style="width: 5%; vertical-align: bottom">
-                <center><h3>Interaction</h3></center>
-            </td>
-            <td style="width: 5%; vertical-align: bottom">
-                <center><h3>Details</h3></center>
-            </td>
-            <td style="width: 5%; vertical-align: bottom">
-                <center><h3>About</h3></center>
-            </td>
-        </tr>
-    </table>
-</div>
+
   <div class="container-fluid">
-      <div class="row mt-4">
-        <div class="col-md-4">
-          <div class="form-group ">
-            <select class="form-control" name="type" id="select-field">
-              <option>Supplement</option>
-              <option>Drug</option>
-            </select>
-          </div>
+    <div class="row mt-4">
+      <div class="col-md-2"></div>
+      <div class="col-md-3">
+        <!-- <div id='select-field' class='mt-3'> -->
+        <select class="form-control" name="type" id="select-field">
+          <option>Supplement</option>
+          <option>Drug</option>
+        </select>
+        <!-- $('#filterDay input:radio:checked').val() -->
+        <!-- <div class="form-check-inline">
+          <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="type" value='drug'>Drug
+          </label>
         </div>
-        <div class="col-md-4">
-          <div class="form-group">
-            <input class="form-control" list="supplements" name="name" id="name-field" autocomplete="off">
-            <datalist id="supplements">
-            </datalist>
-          </div>
-        </div>
-        <div class="col-md-2">
-          <button onclick="AddNewEntry()" class="btn btn-primary">Add</button>
+        <div class="form-check-inline">
+          <label class="form-check-label">
+            <input type="radio" class="form-check-input" name="type" value='supplement'>Supplement
+          </label>
+        </div> -->
+      </div>
+      <!-- </div> -->
+      <div class="col-md-3">
+        <div class="form-group">
+          <input class="form-control" list="supplements" name="name" id="name-field" autocomplete="off">
+          <datalist id="supplements">
+          </datalist>
         </div>
       </div>
-      <div class="pre-scrollable" id="button-div" style="overflow-y: scroll; height:100px; width: auto;">
+      <div class="col-md-2">
+        <button onclick="AddNewEntry()" class="btn btn-primary">Add</button>
       </div>
+      <div class="col-md-1"></div>
+    </div>
+    <div class="pre-scrollable" id="button-div" style="overflow-y: scroll; height:100px; width: auto;">
+    </div>
     <div class="row">
       <div class="col-md-2" id="supplement-side-div">
         <h4>Supplement</h4>
@@ -129,52 +143,57 @@
     </div>
   </div>
 </body>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
 <script>
   var drug_list = []
-  var sup_list  = []
+  var sup_list = []
 
-  function RemoveFromSupList(val1, elem){
-    sup_list = sup_list.filter(function(item){
-           return item != val1;
+  function RemoveFromSupList(val1, elem) {
+    sup_list = sup_list.filter(function (item) {
+      return item != val1;
     });
     elem.remove();
 
     queryMedSupplements(drug_list, sup_list);
   }
-  function RemoveFromDrugList(val1, elem){
-      drug_list = drug_list.filter(function(item){
-             return item != val1;
-      });
-      elem.remove();
+  function RemoveFromDrugList(val1, elem) {
+    drug_list = drug_list.filter(function (item) {
+      return item != val1;
+    });
+    elem.remove();
 
-      queryMedSupplements(drug_list, sup_list);
-    }
+    queryMedSupplements(drug_list, sup_list);
+  }
 
-  function AddNewEntry(){
+  function AddNewEntry() {
     var refresh = false;
     if ($("#select-field").val() == "Supplement") {
-        if (sup_list.indexOf($("#name-field").val())==-1){
-            refresh = true;
-            sup_list.push($("#name-field").val())
-            $("#button-div").append('<button type="button" onclick = "RemoveFromSupList(\''+ $("#name-field").val() +'\', this)" id = \"'+ $("#name-field").val() +'\" class="btn btn-outline-warning btn-rounded waves-effect"><i class="fas fa-car pr-2" aria-hidden="true"></i>'+$("#name-field").val()+'</button>')
-        }
+      if (sup_list.indexOf($("#name-field").val()) == -1) {
+        refresh = true;
+        sup_list.push($("#name-field").val())
+        $("#button-div").append('<button type="button" onclick = "RemoveFromSupList(\'' + $("#name-field").val() + '\', this)" id = \"' + $("#name-field").val() + '\" class="btn btn-outline-warning btn-rounded waves-effect"><i class="fas fa-car pr-2" aria-hidden="true"></i>' + $("#name-field").val() + '</button>')
+      }
     } else {
 
-        if (drug_list.indexOf($("#name-field").val())==-1){
-            refresh = true;
-            drug_list.push($("#name-field").val())
-            $("#button-div").append('<button type="button" onclick = "RemoveFromDrugList(\''+ $("#name-field").val() +'\', this)" id = \"'+ $("#name-field").val() +'\"  class="btn btn-outline-danger btn-rounded waves-effect"><i class="fas fa-car pr-2" aria-hidden="true"></i>'+$("#name-field").val()+'</button>')
-        }
+      if (drug_list.indexOf($("#name-field").val()) == -1) {
+        refresh = true;
+        drug_list.push($("#name-field").val())
+        $("#button-div").append('<button type="button" onclick = "RemoveFromDrugList(\'' + $("#name-field").val() + '\', this)" id = \"' + $("#name-field").val() + '\"  class="btn btn-outline-danger btn-rounded waves-effect"><i class="fas fa-car pr-2" aria-hidden="true"></i>' + $("#name-field").val() + '</button>')
+      }
     }
-    if(refresh)
-        queryMedSupplements(drug_list, sup_list);
+    if (refresh)
+      queryMedSupplements(drug_list, sup_list);
 
     //AddToSideList(sup_list, drug_list)
     $("#name-field").val("");
   }
 
   $(document).ready(function () {
+    // $('#select-field').click(function () {
+    //   var value = $('input[name=type]:checked').val();
+    //   console.log(value);
+    // })
+
     $("#name-field").on("change keydown paste input", function () {
       // console.log(supp, drug);
       var type = $("#select-field").val();
@@ -204,16 +223,16 @@
       })
     });
 
-    
+
   })
 
 
-  function queryMedSupplements(meds, supplements){
+  function queryMedSupplements(meds, supplements) {
     var onMeds = true
     var data = []
     var unLinkedMeds = [], unLinkedSupplements = []
 
-    if(onMeds){
+    if (onMeds) {
       var medSupplementsPair = []
       var supplementsResponse = null
       supplementsString = supplements.join(",")
@@ -235,8 +254,8 @@
             var dataObject = transformData(data)
 
             var svgElement = document.getElementById("vis")
-            if(svgElement)
-                svgElement.remove()
+            if (svgElement)
+              svgElement.remove()
 
 
             draw(dataObject)
@@ -247,42 +266,41 @@
     console.log("Data Arr: ", data)
   }
 
-  function transformData(data){
+  function transformData(data) {
     var outer = d3.map();
     var inner = [];
     var links = [];
 
     var outerId = [0];
 
-    data.forEach(function(d){
-      
+    data.forEach(function (d) {
+
       if (d == null)
         return;
-      
+
       i = { id: 'i' + inner.length, name: d[0], related_links: [] };
       i.related_nodes = [i.id];
       inner.push(i);
-      
+
       if (!Array.isArray(d[1]))
         d[1] = [d[1]];
-      
-      d[1].forEach(function(d1){
-        
+
+      d[1].forEach(function (d1) {
+
         o = outer.get(d1);
-        
-        if (o == null)
-        {
-          o = { name: d1,	id: 'o' + outerId[0], related_links: [] };
+
+        if (o == null) {
+          o = { name: d1, id: 'o' + outerId[0], related_links: [] };
           o.related_nodes = [o.id];
-          outerId[0] = outerId[0] + 1;	
-          
+          outerId[0] = outerId[0] + 1;
+
           outer.set(d1, o);
         }
-        
+
         // create the links
         l = { id: 'l-' + i.id + '-' + o.id, inner: i, outer: o }
         links.push(l);
-        
+
         // and the relationships
         i.related_nodes.push(o.id);
         i.related_links.push(l.id);
@@ -292,14 +310,14 @@
     });
 
     // Sort the inner entity according to the number of interactions with the outer entity 
-    inner.sort(function(inner1, inner2) {
-        if(inner1.related_links.length > inner2.related_links.length)
-            return -1
-        
-        if(inner2.related_links.length > inner1.related_links.length)
-            return 1
+    inner.sort(function (inner1, inner2) {
+      if (inner1.related_links.length > inner2.related_links.length)
+        return -1
 
-        return 0
+      if (inner2.related_links.length > inner1.related_links.length)
+        return 1
+
+      return 0
     })
 
     var outerInteractive = new Set()
@@ -308,11 +326,11 @@
 
     inner.forEach((innerElement, index) => {
       console.log("Inner Element: ", innerElement)
-      if(innerElement.related_links.length == 0){ // The inner Meds donot have any links => non-interactive
+      if (innerElement.related_links.length == 0) { // The inner Meds donot have any links => non-interactive
         innerNonInteractive.add(innerElement.name)
         innerNonInteractiveIndexes.push(index)
       } else { // Else they have some links to DSs and add those DSs to a set
-        outerInteractive.add(new Set(innerElement.related_nodes.slice(1,innerElement.related_nodes.length))) 
+        outerInteractive.add(new Set(innerElement.related_nodes.slice(1, innerElement.related_nodes.length)))
       }
 
       // Remove all the non-interactive indexes from the inner
@@ -324,7 +342,7 @@
       function difference(setA, setB) {
         var _difference = new Set(setA);
         for (var elem of setB) {
-            _difference.delete(elem);
+          _difference.delete(elem);
         }
         return _difference;
       }
@@ -351,12 +369,12 @@
   }
 
   // Drawing the visualization
-  function draw(data){
+  function draw(data) {
     var innerMin, innerMax
 
-    if(data.inner[0]){
-        innerMin = data.inner[0].related_links.length
-        innerMax = data.inner[data.inner.length - 1].related_links.length
+    if (data.inner[0]) {
+      innerMin = data.inner[0].related_links.length
+      innerMax = data.inner[data.inner.length - 1].related_links.length
     }
 
 
@@ -369,72 +387,70 @@
     var i1 = 0;
     var i2 = outer.length - 1;
 
-    for (var i = 0; i < data.outer.length; ++i)
-    {
+    for (var i = 0; i < data.outer.length; ++i) {
       if (i % 2 == 1)
         data.outer[i2--] = outer[i];
       else
         data.outer[i1++] = outer[i];
     }
 
-    console.log(data.outer.reduce(function(a,b) { return a + b.related_links.length; }, 0) / data.outer.length);
+    console.log(data.outer.reduce(function (a, b) { return a + b.related_links.length; }, 0) / data.outer.length);
 
 
     // from d3 colorbrewer: 
     // This product includes color specifications and designs developed by Cynthia Brewer (http://colorbrewer.org/).
-    var colors = ["#a50026","#d73027","#f46d43","#fdae61","#fee090","#ffffbf","#e0f3f8","#abd9e9","#74add1","#4575b4","#313695"]
+    var colors = ["#a50026", "#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf", "#e0f3f8", "#abd9e9", "#74add1", "#4575b4", "#313695"]
     var colorsMin = 0, colorsMax = colors.length
 
     var color = d3.scale.linear()
-        .domain([60, 220])
-        .range([colors.length-1, 0])
-        .clamp(true);
+      .domain([60, 220])
+      .range([colors.length - 1, 0])
+      .clamp(true);
 
     var diameter = 960;
     var rect_width = 150;
     var rect_height = 25;
 
-    var link_width = "1px"; 
+    var link_width = "1px";
 
     var il = data.inner.length;
     var ol = data.outer.length;
 
     var inner_y = d3.scale.linear()
-        .domain([0, il])
-        .range([-(il * rect_height)/2, (il * rect_height)/2]);
+      .domain([0, il])
+      .range([-(il * rect_height) / 2, (il * rect_height) / 2]);
 
-    mid = (data.outer.length/2.0)
+    mid = (data.outer.length / 2.0)
     var outer_x = d3.scale.linear()
-        .domain([0, mid, mid, data.outer.length])
-        .range([15, 170, 190 ,355]);
+      .domain([0, mid, mid, data.outer.length])
+      .range([15, 170, 190, 355]);
 
     var outer_y = d3.scale.linear()
-        .domain([0, data.outer.length])
-        .range([0, diameter / 2 - 120]);
+      .domain([0, data.outer.length])
+      .range([0, diameter / 2 - 120]);
 
 
     // setup positioning
-    data.outer = data.outer.map(function(d, i) { 
-        d.x = outer_x(i);
-        d.y = diameter/3;
-        return d;
+    data.outer = data.outer.map(function (d, i) {
+      d.x = outer_x(i);
+      d.y = diameter / 3;
+      return d;
     });
 
-    data.inner = data.inner.map(function(d, i) { 
-        d.x = -(rect_width / 2);
-        d.y = inner_y(i);
-        return d;
+    data.inner = data.inner.map(function (d, i) {
+      d.x = -(rect_width / 2);
+      d.y = inner_y(i);
+      return d;
     });
 
 
-    function get_color(length, linksMin, linksMax)
-    {   
-        var c = Math.round(( ((length - linksMin) * (colorsMax - colorsMin))/ (linksMax - linksMin) ) + colorsMin);
-        // console.log("Color Index: ", c)
-        if (isNaN(c))
-            return '#dddddd';	// fallback color
-        
-        return colors[c];
+    function get_color(length, linksMin, linksMax) {
+      var c = Math.round((((length - linksMin) * (colorsMax - colorsMin)) / (linksMax - linksMin)) + colorsMin);
+      // console.log("Color Index: ", c)
+      if (isNaN(c))
+        return '#dddddd';	// fallback color
+
+      return colors[c];
     }
 
     // Can't just use d3.svg.diagonal because one edge is in normal space, the
@@ -442,132 +458,132 @@
     // of a single point, do it ourselves the same way d3 would do it.  
 
 
-    function projectX(x)
-    {
-        return ((x - 90) / 180 * Math.PI) - (Math.PI/2);
+    function projectX(x) {
+      return ((x - 90) / 180 * Math.PI) - (Math.PI / 2);
     }
 
     var diagonal = d3.svg.diagonal()
-        .source(function(d) { return {"x": d.outer.y * Math.cos(projectX(d.outer.x)), 
-                                      "y": -d.outer.y * Math.sin(projectX(d.outer.x))}; })            
-        .target(function(d) { return {"x": d.inner.y + rect_height/2,
-                                      "y": d.outer.x > 180 ? d.inner.x : d.inner.x + rect_width}; })
-        .projection(function(d) { return [d.y, d.x]; });
+      .source(function (d) {
+        return {
+          "x": d.outer.y * Math.cos(projectX(d.outer.x)),
+          "y": -d.outer.y * Math.sin(projectX(d.outer.x))
+        };
+      })
+      .target(function (d) {
+        return {
+          "x": d.inner.y + rect_height / 2,
+          "y": d.outer.x > 180 ? d.inner.x : d.inner.x + rect_width
+        };
+      })
+      .projection(function (d) { return [d.y, d.x]; });
 
     var svg = d3.select("#vis-div")
-        .append("svg")
-        .attr("id", "vis")
-        .attr("width", diameter)
-        .attr("height", diameter)
+      .append("svg")
+      .attr("id", "vis")
+      .attr("width", diameter)
+      .attr("height", diameter)
       .append("g")
-        .attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
-        
+      .attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
+
 
     // links
     var link = svg.append('g').attr('class', 'links').selectAll(".link")
-        .data(data.links)
+      .data(data.links)
       .enter().append('path')
-        .attr('class', 'link')
-        .attr('id', function(d) { return d.id })
-        .attr("d", diagonal)
-        .attr('stroke', function(d) { return get_color(d.inner.related_links.length, innerMin, innerMax); })
-        .attr('stroke-width', link_width);
+      .attr('class', 'link')
+      .attr('id', function (d) { return d.id })
+      .attr("d", diagonal)
+      .attr('stroke', function (d) { return get_color(d.inner.related_links.length, innerMin, innerMax); })
+      .attr('stroke-width', link_width);
 
     // outer nodes
 
     var onode = svg.append('g').selectAll(".outer_node")
-        .data(data.outer)
+      .data(data.outer)
       .enter().append("g")
-        .attr("class", "outer_node")
-        .attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
-        .on("mouseover", mouseover)
-        .on("mouseout", mouseout);
-      
+      .attr("class", "outer_node")
+      .attr("transform", function (d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
+      .on("mouseover", mouseover)
+      .on("mouseout", mouseout);
+
     onode.append("circle")
-        .attr('id', function(d) { return d.id })
-        .attr("r", 4.5);
-      
+      .attr('id', function (d) { return d.id })
+      .attr("r", 4.5);
+
     // onode.append("circle")
     //     .attr('r', 20)
     //     .attr('visibility', 'hidden');
-      
+
     onode.append("text")
-      .attr('id', function(d) { return d.id + '-txt'; })
-        .attr("dy", ".31em")
-        .attr("text-anchor", function(d) { return d.x < 180 ? "start" : "end"; })
-        .attr("transform", function(d) { return d.x < 180 ? "translate(8)" : "rotate(180)translate(-8)"; })
-        .text(function(d) { return d.name; });
-      
+      .attr('id', function (d) { return d.id + '-txt'; })
+      .attr("dy", ".31em")
+      .attr("text-anchor", function (d) { return d.x < 180 ? "start" : "end"; })
+      .attr("transform", function (d) { return d.x < 180 ? "translate(8)" : "rotate(180)translate(-8)"; })
+      .text(function (d) { return d.name; });
+
     // inner nodes
-      
+
     var inode = svg.append('g').selectAll(".inner_node")
-        .data(data.inner)
+      .data(data.inner)
       .enter().append("g")
-        .attr("class", "inner_node")
-        .attr("transform", function(d, i) { return "translate(" + d.x + "," + d.y + ")"})
-        .on("mouseover", mouseover)
-        .on("mouseout", mouseout);
-      
+      .attr("class", "inner_node")
+      .attr("transform", function (d, i) { return "translate(" + d.x + "," + d.y + ")" })
+      .on("mouseover", mouseover)
+      .on("mouseout", mouseout);
+
     inode.append('rect')
-        .attr('width', rect_width)
-        .attr('height', rect_height)
-        .attr('id', function(d) { return d.id; })
-        .attr('fill', function(d) { return get_color(d.related_links.length, innerMin, innerMax); });
-      
+      .attr('width', rect_width)
+      .attr('height', rect_height)
+      .attr('id', function (d) { return d.id; })
+      .attr('fill', function (d) { return get_color(d.related_links.length, innerMin, innerMax); });
+
     inode.append("text")
-      .attr('id', function(d) { return d.id + '-txt'; })
-        .attr('text-anchor', 'middle')
-        .attr("transform", "translate(" + rect_width/2 + ", " + rect_height * .75 + ")")
-        .text(function(d) { return d.name; });
+      .attr('id', function (d) { return d.id + '-txt'; })
+      .attr('text-anchor', 'middle')
+      .attr("transform", "translate(" + rect_width / 2 + ", " + rect_height * .75 + ")")
+      .text(function (d) { return d.name; });
 
     // need to specify x/y/etc
 
     d3.select(self.frameElement).style("height", diameter - 150 + "px");
 
-    function mouseover(d)
-    {
+    function mouseover(d) {
       // bring to front
-      d3.selectAll('.links .link').sort(function(a, b){ return d.related_links.indexOf(a.id); });	
-      
-        for (var i = 0; i < d.related_nodes.length; i++)
-        {
-            d3.select('#' + d.related_nodes[i]).classed('highlight', true);
-            d3.select('#' + d.related_nodes[i] + '-txt').attr("font-weight", 'bold');
-        }
-        
-        for (var i = 0; i < d.related_links.length; i++)
-            d3.select('#' + d.related_links[i]).attr('stroke-width', '5px');
+      d3.selectAll('.links .link').sort(function (a, b) { return d.related_links.indexOf(a.id); });
+
+      for (var i = 0; i < d.related_nodes.length; i++) {
+        d3.select('#' + d.related_nodes[i]).classed('highlight', true);
+        d3.select('#' + d.related_nodes[i] + '-txt').attr("font-weight", 'bold');
+      }
+
+      for (var i = 0; i < d.related_links.length; i++)
+        d3.select('#' + d.related_links[i]).attr('stroke-width', '5px');
     }
 
-    function mouseout(d)
-    {   	
-        for (var i = 0; i < d.related_nodes.length; i++)
-        {
-            d3.select('#' + d.related_nodes[i]).classed('highlight', false);
-            d3.select('#' + d.related_nodes[i] + '-txt').attr("font-weight", 'normal');
-        }
-        
-        for (var i = 0; i < d.related_links.length; i++)
-            d3.select('#' + d.related_links[i]).attr('stroke-width', link_width);
+    function mouseout(d) {
+      for (var i = 0; i < d.related_nodes.length; i++) {
+        d3.select('#' + d.related_nodes[i]).classed('highlight', false);
+        d3.select('#' + d.related_nodes[i] + '-txt').attr("font-weight", 'normal');
+      }
+
+      for (var i = 0; i < d.related_links.length; i++)
+        d3.select('#' + d.related_links[i]).attr('stroke-width', link_width);
     }
 
   }
 
-  function AddToSideList(ListSupp, ListMed)
-  {
+  function AddToSideList(ListSupp, ListMed) {
     $("#supplement-side-div").empty()
     $("#supplement-side-div").append("<h4>Supplements</h4>")
     $("#drug-side-div").empty()
     $("#drug-side-div").append("<h4>Drug</h4>")
-    ListSupp.forEach(function(item){
-        $("#supplement-side-div").append("<div class='col-md-12 supplement-div'>"+item+"</div>");
+    ListSupp.forEach(function (item) {
+      $("#supplement-side-div").append("<div class='col-md-12 supplement-div'>" + item + "</div>");
     })
 
-    ListMed.forEach(function(item){
-        $("#drug-side-div").append("<div class='col-md-12 drug-div'>"+item+"</div>");
+    ListMed.forEach(function (item) {
+      $("#drug-side-div").append("<div class='col-md-12 drug-div'>" + item + "</div>");
     })
   }
 
 </script>
-
-</html>
