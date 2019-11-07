@@ -79,10 +79,21 @@ app.get("/IngredientComponentOf", function (req, res) {
 app.get("/detail", function (req, res) {
     console.log("Detail api called")
     dbUtil.GetItemDetails(res, req.query.type, req.query.name, driver)
-
 })
+
 app.get('/details', function (req, res) {
     res.render('details');
+})
+
+app.get("/DrugInteractWithIngredient", function (req, res) {
+    console.log("DrugInteractWithIngredient api called")
+    dbUtil.DrugInteractWithIngredient(res, req.query.name, driver)
+})
+
+
+app.get("/DrugInteractWithSuppliment", function (req, res) {
+    console.log("DrugInteractWithSuppliment api called")
+    dbUtil.DrugInteractWithSuppliment(res, req.query.name, driver)
 })
 
 app.listen(8080);

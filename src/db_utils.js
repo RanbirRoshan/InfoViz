@@ -185,3 +185,33 @@ exports.GetIngredientInteractsWithDrug = function(res, ingredientName, driver){
         console.log(err.toString())
     })
 }
+
+exports.DrugInteractWithIngredient = function(res, drugName, driver){
+    var session = driver.session();
+    console.log(drugName)
+    var ret = session.run('MATCH (a:SPD{name:$Name})<-[r:interacts_with]-(b) RETURN b', {Name: drugName })//interacts_with(SDSI, SPD)
+    var drugList = []
+    ret.then(function (result) {
+        result.records.forEach(function (item) {
+            drugList.push(item._fields[0].properties.name)
+        })
+        res.send(drugList)
+    }).catch(function (err) {
+        console.log(err.toString())
+    })
+}
+
+exports.DrugInteractWithSuppliment = function(res, drugName, driver){
+    var session = driver.session();
+    console.log(drugName)
+    var ret = session.run( 'Match (a:SPD{name:$Name})<-[r:interacts_with]-(b)-[k:has_ingredient]-(c) RETURN c', {Name: drugName })//interacts_with(SDSI, SPD)
+    var drugList = []
+    ret.then(function (result) {
+        result.records.forEach(function (item) {
+            drugList.push(item._fields[0].properties.name)
+        })
+        res.send(drugList)
+    }).catch(function (err) {
+        console.log(err.toString())
+    })
+}
