@@ -65,6 +65,12 @@ app.get("/IngredientEffectiveFor", function (req, res) {
     dbUtil.GetIngredientEffectiveFor(res, req.query.name, driver)
 })
 
+
+app.get("/IngredientComponentOf", function (req, res) {
+    console.log("IngredientComponentof api called")
+    dbUtil.GetIngredientComponentOf(res, req.query.name, driver)
+})
+
 app.get("/detail", function (req, res) {
     console.log("Detail api called")
     dbUtil.GetItemDetails(res, req.query.type, req.query.name, driver)
