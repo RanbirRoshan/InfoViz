@@ -135,3 +135,21 @@ exports.GetItemDetails = function (res, type, name, driver){
         console.log(err.toString())
     })
 }
+
+exports.GetIngredientEffectiveFor = function (res, name, driver){
+    var session = driver.session();
+    name="Magnesium"
+    console.log(name)
+    var ret = session.run('MATCH (a:SDSI{name:$Name})-[:is_effective_for]->(b) RETURN b', {Name: name })
+    var diseaseList = []
+    ret.then(function (result) {
+        result.records.forEach(function (item) {
+            console.log(item._fields[0].properties.name)
+           diseaseList.push(item._fields[0].properties.name)
+        })
+        session.close();
+        res.send(diseaseList)
+    }).catch(function (err) {
+        console.log(err.toString())
+    })
+}

@@ -62,7 +62,7 @@ app.get("/SupVsMed", function (req, res) {
 
 app.get("/IngredientEffectiveFor", function (req, res) {
     console.log("IngredientEffectiveFor api called")
-    dbUtil.GetItemDetails(res, req.query.name, driver)
+    dbUtil.GetIngredientEffectiveFor(res, req.query.name, driver)
 })
 
 app.get("/detail", function (req, res) {
