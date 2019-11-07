@@ -96,6 +96,10 @@ app.get("/DrugInteractWithSuppliment", function (req, res) {
     dbUtil.DrugInteractWithSuppliment(res, req.query.name, driver)
 })
 
+app.get('/drugs', function (req, res) {
+    res.render('drugs');
+})
+
 app.listen(8080);
 console.log("server started")
 module.exports = app

@@ -23,11 +23,11 @@
           <input type="radio" name="overview" autocomplete="off" value="overview"> Overview
         </label>
         <label class="btn btn-outline-info">
-          <input type="radio" name="relationship" autocomplete="off" value="relationship"> Effective for
+          <input type="radio" name="relationship" autocomplete="off" value="relationship"> Interacts With Ingredient
         </label>
         <label class="btn btn-outline-info">
           <input type="radio" name="supplement-relationship" autocomplete="off" value="supplement-relationship">
-          Present In
+          Interact With Supplement
         </label>
       </div>
     </div>
@@ -63,7 +63,7 @@
         type: 'GET',
         crossDomain: true,
         // dataType: 'jsonp',
-        url: 'http://localhost:8080/KeyWords?type=3&name=' + inputName,
+        url: 'http://localhost:8080/KeyWords?type=2&name=' + inputName,
         success: function (jsondata) {
           console.log(jsondata);
           $("#ingredients").empty();
@@ -114,7 +114,7 @@
         type: 'GET',
         crossDomain: true,
         // dataType: 'jsonp',
-        url: 'http://localhost:8080/IngredientEffectiveFor?type=3&name=' + ingredient,
+        url: 'http://localhost:8080/DrugInteractWithIngredient?type=2&name=' + ingredient,
         success: function (data) {
           console.log("Is effective for", data);
           var arr = data
@@ -130,7 +130,7 @@
         type: 'GET',
         crossDomain: true,
         // dataType: 'jsonp',
-        url: 'http://localhost:8080/IngredientComponentOf?type=3&name=' + ingredient,
+        url: 'http://localhost:8080/DrugInteractWithSuppliment?type=2&name=' + ingredient,
         success: function (data) {
           console.log("Is component of", data);
           var num = Math.floor(Math.random() * 30)
