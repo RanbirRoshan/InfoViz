@@ -9,6 +9,8 @@ exports.KeyWordSearch = function (res, type, SearchPrifix, WordCount, driver) {
         var ret = session.run('MATCH (n:DSP) where n.name =~ \"(?i)' + SearchPrifix + '.*\" RETURN n LIMIT $OutLimit', { OutLimit: WordCount })
     } else if (type == 2) {
         var ret = session.run('MATCH (n:SPD) where n.name =~ \"(?i)' + SearchPrifix + '.*\" RETURN n LIMIT $OutLimit', { OutLimit: WordCount })
+    } else if (type == 3) {
+        var ret = session.run('MATCH (n:SDSI) where n.name =~ \"(?i)' + SearchPrifix + '.*\" RETURN n LIMIT $OutLimit', { OutLimit: WordCount })
     } else {
         var ret = session.run('MATCH (n) where n.name =~ \"(?i)' + SearchPrifix + '.*\" RETURN n LIMIT $OutLimit', { OutLimit: WordCount })
     }
@@ -27,7 +29,7 @@ exports.KeyWordSearch = function (res, type, SearchPrifix, WordCount, driver) {
 
 //var session = driver.session();
 exports.MedDSInteraction = function (medList, DSList, response, driver) {
-    medList= medList.split(",")
+    medList = medList.split(",")
     DSList = DSList.split(",")
 
     console.log("DSList: ", DSList)
@@ -57,18 +59,18 @@ exports.MedDSInteraction = function (medList, DSList, response, driver) {
             '-[:interacts_with]->(c) where c.name in $MedList  RETURN c', { MedList: medList, SupName: DSList[0] })
     }
     ret.then(function (result) {
-         result.records.forEach(function (data) {
-             list.push(data._fields[0].properties.name)
+        result.records.forEach(function (data) {
+            list.push(data._fields[0].properties.name)
         })
         console.log(result)
         response.send([primary, Array.from(new Set(list))])
         session.close();
     }
     )
-    .catch(function (err) {
-        console.log(err.toString())
-    }
-    )
+        .catch(function (err) {
+            console.log(err.toString())
+        }
+        )
 }
 
 exports.pingServer = function (req, res, driver) {
@@ -107,17 +109,17 @@ exports.pingServer = function (req, res, driver) {
     return "Server Ping Called Jay";
 }
 
-exports.GetItemDetails = function (res, type, name, driver){
+exports.GetItemDetails = function (res, type, name, driver) {
     var session = driver.session();
     console.log(type)
     console.log(name)
     // 1 stands for suppliment
     if (type == 1) {
         var ret = session.run('MATCH (a:DSP{name:$SearchName})) return a', { SearchName: name })
-    // 2 is for medicine
+        // 2 is for medicine
     } else if (type == 2) {
         var ret = session.run('MATCH (a:SPD{name:$SearchName}) return a', { SearchName: name })
-    // 3 is for ingredients
+        // 3 is for ingredients
     } else {
         var ret = session.run('MATCH (a:SDSI{name:$SearchName}) return a', { SearchName: name })
     }

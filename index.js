@@ -74,6 +74,10 @@ app.get("/IngredientComponentOf", function (req, res) {
 app.get("/detail", function (req, res) {
     console.log("Detail api called")
     dbUtil.GetItemDetails(res, req.query.type, req.query.name, driver)
+
+})
+app.get('/details', function (req, res) {
+    res.render('details');
 })
 
 app.listen(8080);
