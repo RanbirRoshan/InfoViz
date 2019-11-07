@@ -166,4 +166,20 @@ exports.GetIngredientComponentOf = function (res, name, driver){
     }).catch(function (err) {
         console.log(err.toString())
     })
+
+}
+
+exports.GetIngredientInteractsWithDrug = function(res, ingredientName, driver){
+    var session = driver.session();
+    console.log(ingredientName)
+    var ret = session.run('MATCH (a:SDSI{name:$Name})-[r:interacts_with]->(b) RETURN b', {Name: ingredientName })//interacts_with(SDSI, SPD)
+    var drugList = []
+    ret.then(function (result) {
+        result.records.forEach(function (item) {
+            drugList.push(item._fields[0].properties.name)
+        })
+        res.send(drugList)
+    }).catch(function (err) {
+        console.log(err.toString())
+    })
 }

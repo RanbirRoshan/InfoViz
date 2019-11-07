@@ -65,6 +65,11 @@ app.get("/IngredientEffectiveFor", function (req, res) {
     dbUtil.GetIngredientEffectiveFor(res, req.query.name, driver)
 })
 
+app.get("/IngredientInteractsWithDrug", function (req, res) { //Tested with localhost:8080/IngredientInteractsWithDrug?name=Garlic parameter
+    console.log("IngredientInteractsWithDrug API called")
+    dbUtil.GetIngredientInteractsWithDrug(res, req.query.name, driver)
+})
+
 
 app.get("/IngredientComponentOf", function (req, res) {
     console.log("IngredientComponentof api called")
