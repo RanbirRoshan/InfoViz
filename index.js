@@ -56,14 +56,19 @@ app.post("/app", function (req, res) {
 })
 
 app.get("/SupVsMed", function (req, res) {
-    console.log("abcd")
     dbUtil.MedDSInteraction(req.query.drug, req.query.supp, res, driver);
 })
 
-app.get('/details', function (req, res) {
-    res.render('details');
+
+app.get("/IngredientEffectiveFor", function (req, res) {
+    console.log("IngredientEffectiveFor api called")
+    dbUtil.GetItemDetails(res, req.query.name, driver)
 })
 
+app.get("/detail", function (req, res) {
+    console.log("Detail api called")
+    dbUtil.GetItemDetails(res, req.query.type, req.query.name, driver)
+})
 
 app.listen(8080);
 console.log("server started")

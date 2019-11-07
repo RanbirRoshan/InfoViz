@@ -19,12 +19,9 @@ exports.KeyWordSearch = function (res, type, SearchPrifix, WordCount, driver) {
         })
         res.send(list)
         session.close();
-    }
-    )
-        .catch(function (err) {
-            console.log(err.toString())
-        }
-        )
+    }).catch(function (err) {
+        console.log(err.toString())
+    })
 }
 
 
@@ -108,4 +105,33 @@ exports.pingServer = function (req, res, driver) {
     // })
 
     return "Server Ping Called Jay";
+}
+
+exports.GetItemDetails = function (res, type, name, driver){
+    var session = driver.session();
+    console.log(type)
+    console.log(name)
+    // 1 stands for suppliment
+    if (type == 1) {
+        var ret = session.run('MATCH (a:DSP{name:$SearchName})) return a', { SearchName: name })
+    // 2 is for medicine
+    } else if (type == 2) {
+        var ret = session.run('MATCH (a:SPD{name:$SearchName}) return a', { SearchName: name })
+    // 3 is for ingredients
+    } else {
+        var ret = session.run('MATCH (a:SDSI{name:$SearchName}) return a', { SearchName: name })
+    }
+    ret.then(function (result) {
+        sendData = true
+        result.records.forEach(function (item) {
+            if (sendData)
+                res.send(item._fields[0].properties)
+            sendData = false;
+        })
+        if (sendData)
+            res.send("")
+        session.close();
+    }).catch(function (err) {
+        console.log(err.toString())
+    })
 }
