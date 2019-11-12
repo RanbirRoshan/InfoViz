@@ -8,8 +8,8 @@
     <div class="col-md-4 ingredient-name"></div>
     <div class="col-md-3">
       <div class="form-group">
-        <input type="text" class='form-control input-ingredient' list="ingredients" placeholder="Search Dietary Supplement"
-          autocomplete="off">
+        <input type="text" class='form-control input-ingredient' list="ingredients"
+          placeholder="Search Dietary Supplement" autocomplete="off">
         <datalist id="ingredients"></datalist>
       </div>
 
@@ -29,6 +29,10 @@
           <input type="radio" name="supplement-relationship" autocomplete="off" value="supplement-relationship">
           DSP Adverse Reaction
         </label>
+        <label class="btn btn-outline-info">
+          <input type="radio" name="dsp-ingredients" autocomplete="off" value="dsp-ingredients">
+          Ingredients
+        </label>
       </div>
     </div>
   </div>
@@ -46,6 +50,9 @@
   <div class="col-md-10 supplement-relationship-view">
     <div id="graph-2"></div>
   </div>
+  <div class="col-md-10 dsp-ingredients-view">
+    <div id="graph-3"></div>
+  </div>
   <div class="col-md-1"></div>
 
 </div>
@@ -57,6 +64,7 @@
     $('.overview-relationship').hide();
     $('.relationship-view').hide();
     $('.supplement-relationship-view').hide();
+    $('.dsp-ingredients-view').hide();
     $('.input-ingredient').on("change paste input", function () {
       var inputName = $('.input-ingredient').val();
       $.ajax({
@@ -77,6 +85,7 @@
     $('.search-ingredient').on('click', function () {
       $('.relationship-view #graph').html('');
       $('.supplement-relationship-view #graph-2').html('');
+      $('.dsp-ingredients-view #graph-3').html('');
       var ingredient = $('.input-ingredient').val();
       var flag = false;
 
@@ -86,7 +95,7 @@
         // dataType: 'jsonp',
         url: 'http://localhost:8080/detail?type=1&name=' + ingredient,
         success: function (data) {
-            console.log(data)
+          console.log(data)
           $('.overview-relationship').show();
           $('.input-ingredient').val('');
           $('.ingredient-name').html('');
@@ -122,7 +131,6 @@
           source = ingredient
 
           dataJSON = genJSON(source, arr);
-          // console.log(JSON.stringify(json));
           create_vis("#graph");
         }
       });
@@ -139,8 +147,21 @@
           source = ingredient
 
           dataJSON = genJSON(source, arr);
-          // console.log(JSON.stringify(json));
           create_vis("#graph-2");
+        }
+      });
+
+      $.ajax({
+        type: 'GET',
+        crossDomain: true,
+        // dataType: 'jsonp',
+        url: 'http://localhost:8080/DSPIngredients?type=1&name=' + ingredient,
+        success: function (data) {
+          var uniqueData = Array.from(new Set(data));
+          $('.dsp-ingredients-view #graph-3').html('');
+          uniqueData.forEach(function (item) {
+            $('.dsp-ingredients-view #graph-3').append('<h5>' + item + '</h5>');
+          })
         }
       });
 
@@ -149,18 +170,23 @@
       $('.overview-view').hide();
       $('.relationship-view').show();
       $('.supplement-relationship-view').hide();
+      $('.dsp-ingredients-view').hide();
       $(this).parent().addClass('active');
       if ($('input[name=overview]').parent().hasClass('active')) {
         $('input[name=overview]').parent().removeClass('active');
       }
       if ($('input[name=supplement-relationship]').parent().hasClass('active')) {
         $('input[name=supplement-relationship]').parent().removeClass('active');
+      }
+      if ($('input[name=dsp-ingredients]').parent().hasClass('active')) {
+        $('input[name=dsp-ingredients]').parent().removeClass('active');
       }
     })
     $('input[name=overview]').click(function () {
       $('.overview-view').show();
       $('.relationship-view').hide();
       $('.supplement-relationship-view').hide();
+      $('.dsp-ingredients-view').hide();
       $(this).parent().addClass('active');
       if ($('input[name=relationship]').parent().hasClass('active')) {
         $('input[name=relationship]').parent().removeClass('active');
@@ -168,11 +194,15 @@
       if ($('input[name=supplement-relationship]').parent().hasClass('active')) {
         $('input[name=supplement-relationship]').parent().removeClass('active');
       }
+      if ($('input[name=dsp-ingredients]').parent().hasClass('active')) {
+        $('input[name=dsp-ingredients]').parent().removeClass('active');
+      }
     })
     $('input[name=supplement-relationship]').click(function () {
       $('.overview-view').hide();
       $('.relationship-view').hide();
       $('.supplement-relationship-view').show();
+      $('.dsp-ingredients-view').hide();
       $(this).parent().addClass('active');
       if ($('input[name=overview]').parent().hasClass('active')) {
         $('input[name=overview]').parent().removeClass('active');
@@ -180,7 +210,27 @@
       if ($('input[name=relationship]').parent().hasClass('active')) {
         $('input[name=relationship]').parent().removeClass('active');
       }
+      if ($('input[name=dsp-ingredients]').parent().hasClass('active')) {
+        $('input[name=dsp-ingredients]').parent().removeClass('active');
+      }
     })
+
+    $('input[name=dsp-ingredients]').click(function () {
+      $('.overview-view').hide();
+      $('.relationship-view').hide();
+      $('.supplement-relationship-view').hide();
+      $('.dsp-ingredients-view').show();
+      $(this).parent().addClass('active');
+      if ($('input[name=overview]').parent().hasClass('active')) {
+        $('input[name=overview]').parent().removeClass('active');
+      }
+      if ($('input[name=relationship]').parent().hasClass('active')) {
+        $('input[name=relationship]').parent().removeClass('active');
+      }
+      if ($('input[name=supplement-relationship]').parent().hasClass('active')) {
+        $('input[name=supplement-relationship]').parent().removeClass('active');
+      }
+    });
 
     function create_vis(id) {
 
@@ -250,8 +300,8 @@
         .attr("fill", color)
         .call(drag(simulation));
 
-        node.append("title")
-        		.text(d => d.id);
+      node.append("title")
+        .text(d => d.id);
 
       var texts = svg.selectAll("text.label")
         .data(nodes)

@@ -1,0 +1,581 @@
+<style>
+  #accordion {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
+
+  .node {
+    font: 10px sans-serif;
+  }
+
+  .link {
+    stroke: steelblue;
+    stroke-opacity: 0.5;
+    fill: none;
+    pointer-events: none;
+  }
+</style>
+<div class="container">
+  <div class="row mt-3">
+    <div class="col-md-4 ingredient-name"></div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <input type="text" class='form-control input-ingredient' list="ingredients"
+          placeholder="Search Dietary Supplement" autocomplete="off">
+        <datalist id="ingredients"></datalist>
+      </div>
+
+    </div>
+    <div class="col-md-1">
+      <button class="btn btn-primary search-ingredient">Search</button>
+    </div>
+    <div class="col-md-4 overview-relationship">
+      <div id="overview-relationship-btns" class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-outline-info active">
+          <input type="radio" name="overview" autocomplete="off" value="overview"> Overview
+        </label>
+        <label class="btn btn-outline-info">
+          <input type="radio" name="relationship" autocomplete="off" value="relationship"> DSP Interaction with Drugs
+        </label>
+        <label class="btn btn-outline-info">
+          <input type="radio" name="supplement-relationship" autocomplete="off" value="supplement-relationship">
+          DSP Adverse Reaction
+        </label>
+        <label class="btn btn-outline-info">
+          <input type="radio" name="dsp-ingredients" autocomplete="off" value="dsp-ingredients">
+          Ingredients
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row mt-4">
+  <div class="col-md-1"></div>
+  <div class="col-md-10 overview-view">
+    <div id="accordion">
+
+    </div>
+  </div>
+  <div class="col-md-10 relationship-view">
+    <div id="graph"></div>
+  </div>
+  <div class="col-md-10 supplement-relationship-view">
+    <div id="graph-2"></div>
+  </div>
+  <div class="col-md-10 dsp-ingredients-view">
+    <!-- <div id="graph-3"></div> -->
+    <div id="graph-3">
+    </div>
+  </div>
+  <div class="col-md-1"></div>
+
+</div>
+</div>
+<script>
+  $(document).ready(function () {
+    var dataJSON = [];
+    $("#accordion").accordion({ heightStyle: "content" });
+    $('.overview-relationship').hide();
+    $('.relationship-view').hide();
+    $('.supplement-relationship-view').hide();
+    $('.dsp-ingredients-view').hide();
+    $('.input-ingredient').on("change paste input", function () {
+      var inputName = $('.input-ingredient').val();
+      $.ajax({
+        type: 'GET',
+        crossDomain: true,
+        // dataType: 'jsonp',
+        url: 'http://localhost:8080/KeyWords?type=1&name=' + inputName,
+        success: function (jsondata) {
+          console.log(jsondata);
+          $("#ingredients").empty();
+          $.each(jsondata, function (key, value) {
+            $("#ingredients").append("<option value=\"" + value + "\">")
+          });
+        }
+      })
+    });
+
+
+    $('.search-ingredient').on('click', function () {
+      $('.relationship-view #graph').html('');
+      $('.supplement-relationship-view #graph-2').html('');
+      $('.dsp-ingredients-view #graph-3').html('');
+      var ingredient = $('.input-ingredient').val();
+      var flag = false;
+
+      $.ajax({
+        type: 'GET',
+        crossDomain: true,
+        // dataType: 'jsonp',
+        url: 'http://localhost:8080/detail?type=1&name=' + ingredient,
+        success: function (data) {
+          console.log(data)
+          $('.overview-relationship').show();
+          $('.input-ingredient').val('');
+          $('.ingredient-name').html('');
+          $('.ingredient-name').append("<h3>" + data.name + "</h3>")
+          $('#accordion').html('');
+          // console.log(data.name);
+
+
+          $.each(data, function (i, obj) {
+            if (i == "name" || i == "ui" || i == "umls_semantic_type") {
+              //continue
+            } else {
+              flag = true;
+              $('#accordion').append("<h3>" + i + "</h3><div><p>" + obj + "</p></div>");
+              $("#accordion").accordion('refresh');
+            }
+
+          });
+          if (flag == false) {
+            $('#accordion').append("<h5 style='margin-left:450px;'> No content available </h5>");
+          }
+        }
+      });
+
+      // $.ajax({
+      //   type: 'GET',
+      //   crossDomain: true,
+      //   // dataType: 'jsonp',
+      //   url: 'http://localhost:8080/DSPInteractWithDrug?type=1&name=' + ingredient,
+      //   success: function (data) {
+      //     console.log("Is effective for", data);
+      //     // var arr = data
+      //     // source = ingredient
+
+      //     // dataJSON = genJSON(source, arr);
+      //     // create_vis("#graph");
+      //   }
+      // });
+
+      // $.ajax({
+      //   type: 'GET',
+      //   crossDomain: true,
+      //   // dataType: 'jsonp',
+      //   url: 'http://localhost:8080/DSPAdverseReaction?type=1&name=' + ingredient,
+      //   success: function (data) {
+      //     console.log("Is component of", data);
+      //     // var num = Math.floor(Math.random() * 30)
+      //     // var arr = data.slice(1, num);
+      //     // source = ingredient
+
+      //     // dataJSON = genJSON(source, arr);
+      //     // create_vis("#graph-2");
+      //   }
+      // });
+
+      dspInteractionWithDrugs(ingredient);
+      dspAdverseRection(ingredient);
+      dspIngredients(ingredient);
+
+      // $.ajax({
+      //   type: 'GET',
+      //   crossDomain: true,
+      //   // dataType: 'jsonp',
+      //   url: 'http://localhost:8080/DSPIngredients?type=1&name=' + ingredient,
+      //   success: function (data) {
+      //     var uniqueData = Array.from(new Set(data));
+      //     $('.dsp-ingredients-view #graph-3').html('');
+      //     myFunction(ingredient);
+      //   }
+      // });
+
+    });
+    $('input[name=relationship]').click(function () {
+      $('.overview-view').hide();
+      $('.relationship-view').show();
+      $('.supplement-relationship-view').hide();
+      $('.dsp-ingredients-view').hide();
+      $(this).parent().addClass('active');
+      if ($('input[name=overview]').parent().hasClass('active')) {
+        $('input[name=overview]').parent().removeClass('active');
+      }
+      if ($('input[name=supplement-relationship]').parent().hasClass('active')) {
+        $('input[name=supplement-relationship]').parent().removeClass('active');
+      }
+      if ($('input[name=dsp-ingredients]').parent().hasClass('active')) {
+        $('input[name=dsp-ingredients]').parent().removeClass('active');
+      }
+    })
+    $('input[name=overview]').click(function () {
+      $('.overview-view').show();
+      $('.relationship-view').hide();
+      $('.supplement-relationship-view').hide();
+      $('.dsp-ingredients-view').hide();
+      $(this).parent().addClass('active');
+      if ($('input[name=relationship]').parent().hasClass('active')) {
+        $('input[name=relationship]').parent().removeClass('active');
+      }
+      if ($('input[name=supplement-relationship]').parent().hasClass('active')) {
+        $('input[name=supplement-relationship]').parent().removeClass('active');
+      }
+      if ($('input[name=dsp-ingredients]').parent().hasClass('active')) {
+        $('input[name=dsp-ingredients]').parent().removeClass('active');
+      }
+    })
+    $('input[name=supplement-relationship]').click(function () {
+      $('.overview-view').hide();
+      $('.relationship-view').hide();
+      $('.supplement-relationship-view').show();
+      $('.dsp-ingredients-view').hide();
+      $(this).parent().addClass('active');
+      if ($('input[name=overview]').parent().hasClass('active')) {
+        $('input[name=overview]').parent().removeClass('active');
+      }
+      if ($('input[name=relationship]').parent().hasClass('active')) {
+        $('input[name=relationship]').parent().removeClass('active');
+      }
+      if ($('input[name=dsp-ingredients]').parent().hasClass('active')) {
+        $('input[name=dsp-ingredients]').parent().removeClass('active');
+      }
+    })
+
+    $('input[name=dsp-ingredients]').click(function () {
+      $('.overview-view').hide();
+      $('.relationship-view').hide();
+      $('.supplement-relationship-view').hide();
+      $('.dsp-ingredients-view').show();
+      $(this).parent().addClass('active');
+      if ($('input[name=overview]').parent().hasClass('active')) {
+        $('input[name=overview]').parent().removeClass('active');
+      }
+      if ($('input[name=relationship]').parent().hasClass('active')) {
+        $('input[name=relationship]').parent().removeClass('active');
+      }
+      if ($('input[name=supplement-relationship]').parent().hasClass('active')) {
+        $('input[name=supplement-relationship]').parent().removeClass('active');
+      }
+    });
+
+
+
+
+
+
+
+
+
+    // added
+    var explodeData = new Map([["SDSI", "SPD"]]);
+    var myMap = new Map();
+    var colorPos = 0;
+    var jsonData = []
+
+    function myRemoveFunction(key) {
+      removeFromJson(key, false);
+      console.log(jsonData);
+      Draw();
+    }
+
+    function removeFromJson(key, remove) {
+      var obj = jsonData.find(o => o.name == key);
+
+      if (obj == undefined)
+        return;
+
+      obj["imports"].forEach(function (item) {
+        removeFromJson(item, true);
+      });
+
+      obj["imports"] = []
+
+      if (remove) {
+        obj["useCount"] = obj["useCount"] - 1;
+        if (obj["useCount"] == 0)
+          jsonData = jsonData.filter(function (el) { return el.name != obj.name; });
+      }
+    }
+
+    // function myFunction(inputName) {
+    //   // var inputName = "Met-Rx - Pure Protein Shake Vanilla Cream";
+    //   $.ajax({
+    //     type: 'GET',
+    //     crossDomain: true,
+    //     // dataType: 'jsonp',
+    //     url: 'http://localhost:8080/DSPIngredients?type=1&name=' + inputName,
+    //     success: function (data) {
+    //       jsonData = []
+    //       jsonData = GenerateJSON(jsonData, "DSP", inputName, "SDSI", data)
+    //       Draw();
+    //     }
+    //   });
+    // }
+
+    function dspInteractionWithDrugs(inputName) {
+      $.ajax({
+        type: 'GET',
+        crossDomain: true,
+        // dataType: 'jsonp',
+        url: 'http://localhost:8080/DSPInteractWithDrug?type=1&name=' + inputName,
+        success: function (data) {
+          // var uniqueData = Array.from(new Set(data));
+          $('.relationship-view #graph').html('');
+          jsonData = []
+          jsonData = GenerateJSON(jsonData, "DSP", inputName, "SPD", data)
+          Draw("graph");
+        }
+      });
+    }
+
+    function dspAdverseRection(inputName) {
+      $.ajax({
+        type: 'GET',
+        crossDomain: true,
+        // dataType: 'jsonp',
+        url: 'http://localhost:8080/DSPAdverseReaction?type=1&name=' + inputName,
+        success: function (data) {
+          // var uniqueData = Array.from(new Set(data));
+          $('.supplement-relationship-view #graph-2').html('');
+          jsonData = []
+          jsonData = GenerateJSON(jsonData, "DSP", inputName, "SS", data)
+          Draw("graph-2");
+        }
+      });
+    }
+
+    function dspIngredients(inputName) {
+      $.ajax({
+        type: 'GET',
+        crossDomain: true,
+        // dataType: 'jsonp',
+        url: 'http://localhost:8080/DSPIngredients?type=1&name=' + inputName,
+        success: function (data) {
+          var uniqueData = Array.from(new Set(data));
+          // console.log(uni)
+          $('.dsp-ingredients-view #graph-3').html('');
+          jsonData = []
+          jsonData = GenerateJSON(jsonData, "DSP", inputName, "SDSI", uniqueData);
+          Draw("graph-3");
+        }
+      });
+    }
+
+    function color(d) {
+      console.log(myMap.size);
+      return d3.interpolateRainbow(myMap.get(d.source.data.name) / myMap.size);
+    }
+
+    function Draw(id) {
+
+      list = document.getElementById(id);
+
+      while (list.hasChildNodes()) {
+        list.removeChild(list.firstChild);
+      }
+
+      var diameter = 700,
+        radius = diameter / 2,
+        innerRadius = radius - 120;
+
+      var cluster = d3.cluster()
+        .size([360, innerRadius]);
+
+      var line = d3.radialLine()
+        .curve(d3.curveBundle.beta(0.85))
+        .radius(function (d) { return d.y; })
+        .angle(function (d) { return d.x / 180 * Math.PI; })
+        //.curve(d3.curveBasisClosed);
+        .curve(d3.curveBasis);
+      //.curve(d3.curveBundle.beta(0.5));
+      //.curve(d3.curveBundle.beta(0));
+      //.curve(d3.curveBundle.beta(1));
+      //.curve(d3.curveCardinal.tension(1));
+      //.curve(d3.curveCardinal.tension(0.5));
+      //.curve(d3.curveCardinal.tension(0));
+      //.curve(d3.curveCatmullRom.alpha(1));
+      //.curve(d3.curveCatmullRom.alpha(0));
+      //.curve(d3.curveCatmullRom.alpha(0.5));
+      //.curve(d3.curveMonotoneX);
+      //.curve(d3.curveMonotoneY);
+      //.curve(d3.curveStep);
+      //.curve(d3.curveNatural);
+      //.curve(d3.curveStepAfter);
+      //.curve(d3.curveStep);
+      //.curve(d3.curveStepBefore);
+
+      var svg = d3.select("#" + id).append("svg")
+        .attr("width", diameter)
+        .attr("height", diameter)
+        .append("g")
+        .attr("transform", "translate(" + radius + "," + radius + ")");
+
+      var link = svg.append("g").selectAll(".link"),
+        node = svg.append("g").selectAll(".node");
+
+      var root = packageHierarchy(jsonData)
+        .sum(function (d) { return d.size; });
+
+      cluster(root);
+      console.log(cluster);
+
+      link = link
+        .data(packageImports(root.leaves()))
+        .enter().append("path")
+        .each(function (d) { d.source = d[0], d.target = d[d.length - 1]; })
+        .attr("class", "link")
+        .style("stroke", color)
+        .style("opacity", 0.3)
+        .attr("d", line);
+
+      node = node
+        .data(root.leaves())
+        .enter().append("text")
+        .attr("class", "node")
+        .attr("dy", "0.31em")
+        .attr("id", function (d) { return d.data.name; })
+        .attr("transform", function (d) { return "rotate(" + (d.x - 90) + ")translate(" + (d.y + 8) + ",0)" + (d.x < 180 ? "" : "rotate(180)"); })
+        .attr("text-anchor", function (d) { return d.x < 180 ? "start" : "end"; })
+        .attr("background-color", "#FFFFFF")
+        .text(function (d) { return d.data.key; })
+        .on('mouseout', function () {
+          link.style('stroke-width', 2);
+          link.style("stroke", color);
+          link.style("opacity", 0.3);
+        })
+        .on('mouseover', function (d) {
+          link.style('stroke-width', function (l) {
+            if (d === l.source || d === l.target)
+              return 4;
+            else
+              return 2;
+          });
+          link.style("stroke", color);
+          link.style("opacity", function (l) {
+            if (d === l.source || d === l.target)
+              return 1;
+            else
+              return 0.3
+          });
+        })
+        .on("click", ClickFuncCalled);
+
+      svg.append("svg:path")
+        .attr("class", "arc")
+        .attr("d", d3.svg.arc().outerRadius(ry - 180).innerRadius(0).startAngle(0).endAngle(2 * Math.PI))
+        .on("mousedown", mousedown);
+    }
+
+    function ClickFuncCalled(d) {
+      var newData = [];
+      var newTargetType = "";
+      var targetUrl = ""
+      console.log(d.data);
+      console.log(d);
+      if (explodeData.has(d.data.group)) {
+        if (d.data.expanded == 0) {
+          console.log("Can be expanded");
+          newTargetType = explodeData.get(d.data.group);
+          if (d.data.group == "SDSI" && newTargetType == "SPD") {
+            targetUrl = 'http://localhost:8080/IngredientInteractsWithDrug?type=1&name=' + d.data.key;
+          }
+
+          $.ajax({
+            type: 'GET',
+            crossDomain: true,
+            // dataType: 'jsonp',
+            url: targetUrl,
+            success: function (data) {
+              console.log(data)
+              jsonData = GenerateJSON(jsonData, d.data.group, d.data.key, newTargetType, data)
+              Draw();
+              d.data.expanded = 1;
+              //document.getElementById(d.data.name).innerHTML = d.data.key + " (-)"
+            }
+          });
+        } else {
+          d.data.key = d.data.key
+          removeFromJson(d.data.name, false);
+          Draw();
+          d.data.expanded = 0;
+          document.getElementById(d.data.name).innerHTML = d.data.key;
+        }
+      }
+    }
+
+    // Lazily construct the package hierarchy from class names.
+    function packageHierarchy(classes) {
+
+      var map = {};
+
+      function find(name, data) {
+        var node = map[name], i;
+
+        if (!node) {
+          node = map[name] = data || { name: name, children: [] };
+
+          if (name.length) {
+            node.parent = find(name.substring(0, i = name.lastIndexOf(".")));
+            node.parent.children.push(node);
+            node.key = name.substring(i + 1);
+          }
+        }
+        return node;
+      }
+
+      classes.forEach(function (d) {
+        find(d.name, d);
+      });
+
+      return d3.hierarchy(map[""]);
+    }
+
+    // Return a list of imports for the given array of nodes.
+    function packageImports(nodes) {
+      var map = {},
+        imports = [];
+
+      // Compute a map from name to node.
+      nodes.forEach(function (d) {
+        map[d.data.name] = d;
+      });
+
+      // For each import, construct a link from the source to target node.
+      nodes.forEach(function (d) {
+        if (d.data.imports) d.data.imports.forEach(function (i) {
+          imports.push(map[d.data.name].path(map[i]));
+        });
+      });
+
+      return imports;
+    }
+
+    function GenerateJSON(CurrentJSON, SourceGroup, Source, TargetGroup, Target) {
+
+      var SrcKey = SourceGroup + "." + Source;
+
+      if (!myMap.has(SrcKey)) {
+        myMap.set(SrcKey, colorPos);
+        console.log(colorPos);
+        colorPos = colorPos + 1;
+      }
+
+      var srcObj = CurrentJSON.find(o => o.name === SrcKey);
+
+      if (srcObj == undefined) {
+        srcObj = { "name": SrcKey, "size": 1, "imports": [], "useCount": 0, "expanded": 0, "group": SourceGroup };
+        CurrentJSON.push(srcObj);
+      }
+
+      Target.forEach(function (item) {
+
+        var newKey = TargetGroup + "." + item;
+
+        var newObj = CurrentJSON.find(o => o.name === newKey);
+
+        if (newObj == undefined) {
+          newObj = { "name": newKey, "size": 1, "imports": [], "useCount": 0, "expanded": 0, "group": TargetGroup };
+          CurrentJSON.push(newObj);
+        }
+
+        srcObj["imports"].push(newKey);
+
+        newObj["useCount"] = newObj["useCount"] + 1;
+      })
+
+      return CurrentJSON;
+    }
+
+
+  });
+</script>

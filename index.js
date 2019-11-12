@@ -81,7 +81,7 @@ app.get("/detail", function (req, res) {
     dbUtil.GetItemDetails(res, req.query.type, req.query.name, driver)
 })
 app.get('/dsp', function (req, res) {
-    res.render('dsp');
+    res.render('dsp-ingredients');
 })
 
 
@@ -112,7 +112,7 @@ app.get("/DSPInteractWithDrug", function (req, res) {
 app.get("/DSPIngredients", function (req, res) {
     console.log("DSPIngredients api called")
     dbUtil.DSPIngredients(res, req.query.name, driver)
-})
+});
 
 app.get("/DSPAdverseReaction", function (req, res) {
     console.log("DSPAdverseReaction api called")
