@@ -8,7 +8,7 @@ exports.KeyWordSearch = function (res, type, SearchPrifix, WordCount, driver) {
     if (type == 1) {
         var ret = session.run('MATCH (n:DSP) where n.name =~ \"(?i)' + SearchPrifix + '.*\" RETURN n LIMIT $OutLimit', { OutLimit: WordCount })
     } else if (type == 2) {
-        var ret = session.run('MATCH (n:SPD) where n.name =~ \"(?i)' + SearchPrifix + '.*\" RETURN n LIMIT $OutLimit', { OutLimit: WordCount })
+        var ret = session.run('MATCH (n:PD) where n.name =~ \"(?i)' + SearchPrifix + '.*\" RETURN n LIMIT $OutLimit', { OutLimit: WordCount })
     } else if (type == 3) {
         var ret = session.run('MATCH (n:SDSI) where n.name =~ \"(?i)' + SearchPrifix + '.*\" RETURN n LIMIT $OutLimit', { OutLimit: WordCount })
     } else {
@@ -50,8 +50,8 @@ exports.MedDSInteraction = function (medList, DSList, response, driver) {
     if (medList.length == 1) {
         var primary = medList[0]
 
-        var ret = session.run('MATCH (a:DSP)-[:has_ingredient]->(b)-[:interacts_with]->(c:SPD{name:$SPDName}) ' +
-            'where a.name in $SupList  RETURN a', { SupList: DSList, SPDName: medList[0] })
+        var ret = session.run('MATCH (a:DSP)-[:has_ingredient]->(b)-[:interacts_with]->(c:PD{name:$PDName}) ' +
+            'where a.name in $SupList  RETURN a', { SupList: DSList, PDName: medList[0] })
     } else {
         var primary = DSList[0]
 
@@ -112,7 +112,7 @@ exports.pingServer = function (req, res, driver) {
 exports.DSPIngredients = function (res, DSPName, driver) {
     var session = driver.session();
     console.log(DSPName)
-    var ret = session.run('MATCH (a:DSP{name:$Name})-[r:has_ingredient]-(b) RETURN b', {Name: DSPName })//interacts_with(SDSI, SPD)
+    var ret = session.run('MATCH (a:DSP{name:$Name})-[r:has_ingredient]-(b) RETURN b', {Name: DSPName })//interacts_with(SDSI, PD)
     var drugList = []
     ret.then(function (result) {
         result.records.forEach(function (item) {
@@ -133,7 +133,7 @@ exports.GetItemDetails = function (res, type, name, driver) {
         var ret = session.run('MATCH (a:DSP{name:$SearchName}) return a', { SearchName: name })
         // 2 is for medicine
     } else if (type == 2) {
-        var ret = session.run('MATCH (a:SPD{name:$SearchName}) return a', { SearchName: name })
+        var ret = session.run('MATCH (a:PD{name:$SearchName}) return a', { SearchName: name })
         // 3 is for ingredients
     } else {
         var ret = session.run('MATCH (a:SDSI{name:$SearchName}) return a', { SearchName: name })
@@ -189,7 +189,7 @@ exports.GetIngredientComponentOf = function (res, name, driver){
 exports.GetIngredientInteractsWithDrug = function(res, ingredientName, driver){
     var session = driver.session();
     console.log(ingredientName)
-    var ret = session.run('MATCH (a:SDSI{name:$Name})-[r:interacts_with]->(b) RETURN b', {Name: ingredientName })//interacts_with(SDSI, SPD)
+    var ret = session.run('MATCH (a:SDSI{name:$Name})-[r:interacts_with]->(b) RETURN b', {Name: ingredientName })//interacts_with(SDSI, PD)
     var drugList = []
     ret.then(function (result) {
         result.records.forEach(function (item) {
@@ -201,10 +201,29 @@ exports.GetIngredientInteractsWithDrug = function(res, ingredientName, driver){
     })
 }
 
+exports.IngredientHasAdverseReaction = function(res, ingredientName, driver){
+    var session = driver.session();
+    // console.log("jab")
+    // console.log(ingredientName, session, driver, "abcd")
+    var ret = session.run('MATCH (a:SDSI{name:$Name})-[r:has_adverse_reaction]-(b) RETURN b', {Name: ingredientName })
+    var symptomList = []
+
+    ret.then(function (result) {
+        // console.log(result)
+        // console.log("Inside ret")
+        result.records.forEach(function (item) {
+            symptomList.push(item._fields[0].properties.name)
+        })
+        res.send(symptomList)
+    }).catch(function (err) {
+        console.log(err.toString())
+    })
+}
+
 exports.DrugInteractWithIngredient = function(res, drugName, driver){
     var session = driver.session();
-    console.log(drugName)
-    var ret = session.run('MATCH (a:SPD{name:$Name})<-[r:interacts_with]-(b) RETURN b', {Name: drugName })//interacts_with(SDSI, SPD)
+    console.log(drugName, session)
+    var ret = session.run('MATCH (a:PD{name:$Name})<-[r:interacts_with]-(b) RETURN b', {Name: drugName })//interacts_with(SDSI, PD)
     var drugList = []
     ret.then(function (result) {
         result.records.forEach(function (item) {
@@ -219,7 +238,7 @@ exports.DrugInteractWithIngredient = function(res, drugName, driver){
 exports.DrugInteractWithSuppliment = function(res, drugName, driver){
     var session = driver.session();
     console.log(drugName)
-    var ret = session.run( 'Match (a:SPD{name:$Name})<-[r:interacts_with]-(b)-[k:has_ingredient]-(c) RETURN c', {Name: drugName })//interacts_with(SDSI, SPD)
+    var ret = session.run( 'Match (a:PD{name:$Name})<-[r:interacts_with]-(b)-[k:has_ingredient]-(c) RETURN c', {Name: drugName })//interacts_with(SDSI, PD)
     var drugList = []
     ret.then(function (result) {
         result.records.forEach(function (item) {
@@ -235,7 +254,7 @@ exports.DSPInteractWithDrug = function(res, DSPName, driver){
     var session = driver.session();
     //DSPName = "Xpn Mag-4 Plus"
     console.log(DSPName)
-    var ret = session.run( 'Match (a:DSP{name:$Name})-[r:has_ingredient]-(b)-[k:interacts_with]->(c) RETURN c', {Name: DSPName })//interacts_with(SDSI, SPD)
+    var ret = session.run( 'Match (a:DSP{name:$Name})-[r:has_ingredient]-(b)-[k:interacts_with]->(c) RETURN c', {Name: DSPName })//interacts_with(SDSI, PD)
     var drugList = []
     ret.then(function (result) {
         result.records.forEach(function (item) {
@@ -251,7 +270,7 @@ exports.DSPAdverseReaction = function(res, DSPName, driver){
     var session = driver.session();
     //DSPName = "Male Supplement Post-Meal + Testo Boost"
     console.log(DSPName)
-    var ret = session.run( 'Match (a:DSP{name:$Name})-[r:has_ingredient]-(b)-[k:has_adverse_reaction]->(c) RETURN c', {Name: DSPName })//interacts_with(SDSI, SPD)
+    var ret = session.run( 'Match (a:DSP{name:$Name})-[r:has_ingredient]-(b)-[k:has_adverse_reaction]->(c) RETURN c', {Name: DSPName })//interacts_with(SDSI, PD)
     var drugList = []
     ret.then(function (result) {
         result.records.forEach(function (item) {

@@ -9,7 +9,7 @@ var app = express();
 var cors = require('cors');
 var expressLayouts = require('express-ejs-layouts');
 
-var driver = neo4j.driver("bolt://192.168.0.50:7687");
+var driver = neo4j.driver("bolt://18.208.166.9:8889");
 app.use(expressLayouts);
 app.set("views", path.join(__dirname, "/src/views"))
 app.set("view engine", "ejs")
@@ -118,6 +118,12 @@ app.get("/DSPAdverseReaction", function (req, res) {
     console.log("DSPAdverseReaction api called")
     dbUtil.DSPAdverseReaction(res, req.query.name, driver)
 })
+
+app.get("/IngredientHasAdverseReaction", function (req, res) {
+    console.log("IngredientHasAdverseReaction api called")
+    dbUtil.IngredientHasAdverseReaction(res, req.query.name, driver)
+})
+
 
 app.listen(8080);
 console.log("server started")
