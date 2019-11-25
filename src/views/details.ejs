@@ -27,7 +27,7 @@
         </label>
         <label class="btn btn-outline-info">
           <input type="radio" name="supplement-relationship" autocomplete="off" value="supplement-relationship">
-          Present In
+          Adverse Reaction
         </label>
       </div>
     </div>
@@ -249,8 +249,8 @@
         .attr("fill", color)
         .call(drag(simulation));
 
-        node.append("title")
-        		.text(d => d.id);
+      node.append("title")
+        .text(d => d.id);
 
       var texts = svg.selectAll("text.label")
         .data(nodes)

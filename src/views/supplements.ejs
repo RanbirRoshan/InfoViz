@@ -243,8 +243,8 @@
         AddToSideList(sup_list, drug_list);
 
       meds.forEach(med => {
-        console.log("Request for: ", med)
-
+        //console.log("Request for: ", med)
+        // console.log("supplement string", supplementsString);
         $.ajax({
           type: 'GET',
           crossDomain: true,
@@ -252,7 +252,7 @@
           url: 'http://localhost:8080/SupVsMed?drug=' + med + '&supp=' + supplementsString,
           success: function (jsondata) {
             data.push(jsondata)
-            console.log("Data: ", data)
+            console.log("Data: ", data);
             var dataObject = transformData(data)
 
             var svgElement = document.getElementById("vis")
@@ -265,7 +265,7 @@
         })
       })
     }
-    console.log("Data Arr: ", data)
+    //console.log("Data Arr: ", data)
   }
 
   function transformData(data) {
@@ -327,7 +327,7 @@
     var innerNonInteractiveIndexes = []
 
     inner.forEach((innerElement, index) => {
-      console.log("Inner Element: ", innerElement)
+      //console.log("Inner Element: ", innerElement)
       if (innerElement.related_links.length == 0) { // The inner Meds donot have any links => non-interactive
         innerNonInteractive.add(innerElement.name)
         innerNonInteractiveIndexes.push(index)
@@ -350,10 +350,10 @@
       }
 
       outerNonInteractive = difference(new Set(sup_list), outerInteractive)
-      console.log("outer non interactive: ", outerNonInteractive)
-      console.log("inner non interactive: ", innerNonInteractive)
+      //console.log("outer non interactive: ", outerNonInteractive)
+      //console.log("inner non interactive: ", innerNonInteractive)
 
-      console.log("Function call")
+      //console.log("Function call")
 
       AddToSideList(Array.from(outerNonInteractive), Array.from(innerNonInteractive))
 
@@ -365,8 +365,8 @@
       links: links
     }
 
-    console.log("Inner: ", inner)
-    console.log("Outer: ", outer)
+    //console.log("Inner: ", inner)
+    //console.log("Outer: ", outer)
     return data
   }
 
@@ -396,7 +396,7 @@
         data.outer[i1++] = outer[i];
     }
 
-    console.log(data.outer.reduce(function (a, b) { return a + b.related_links.length; }, 0) / data.outer.length);
+    //console.log(data.outer.reduce(function (a, b) { return a + b.related_links.length; }, 0) / data.outer.length);
 
 
     // from d3 colorbrewer: 

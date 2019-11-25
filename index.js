@@ -124,6 +124,10 @@ app.get("/IngredientHasAdverseReaction", function (req, res) {
     dbUtil.IngredientHasAdverseReaction(res, req.query.name, driver)
 })
 
+app.get("/interactions", function (req, res) {
+    console.log("Interactions API");
+    res.render("interactions");
+})
 
 app.listen(8080);
 console.log("server started")
