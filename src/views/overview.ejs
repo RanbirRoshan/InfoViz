@@ -1,0 +1,404 @@
+<style>
+  .node-text {
+    font-family: 'Source Sans Pro', sans-serif !important;
+    font-size: 16px !important;
+
+  }
+
+  .node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 3px;
+  }
+
+  .node text {
+    font: 12px sans-serif;
+  }
+
+  .link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 2px;
+  }
+</style>
+<div class="container">
+  <div class="alert alert-warning mt-2 error-message text-center" role="alert">
+
+  </div>
+  <div class="row mt-3">
+    <div class="col-md-3 offset-md-1">
+      <select name="interaction-one" id="interaction-one" class="form-control"
+        placeholder="Select Drug/ Dietary Supplement / Ingredient">
+        <option value="" selected disabled>Please Select</option>
+        <option value="drug">Drug</option>
+        <option value="dsp">Dietery Supplement</option>
+        <option value="ingredient">Ingredient</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <div class="col-md-10 offset-md-1">
+        <select name="relationship" id="relationship" class="form-control">
+
+        </select>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="col-md-10">
+        <select name="interaction-two" id="interaction-two" class="form-control">
+
+        </select>
+      </div>
+    </div>
+    <div class="col-md-1"> </div>
+  </div>
+  <div class="row mt-3 hide">
+    <div class="col-md-3 offset-md-1 remove-content">
+      <div class="form-group">
+        <input type="text" class="form-control" id="interaction-one-name" list="interaction-one-list"
+          name="interaction-one-name" autocomplete="off">
+        <datalist id="interaction-one-list">
+        </datalist>
+      </div>
+    </div>
+    <!-- Add Drug -->
+    <div class="col-md-2 add-button">
+      <button class='btn btn-primary'>Add</button>
+    </div>
+    <!-- End Add Drug -->
+    <!-- Add Drug space -->
+    <div class="col-md-2 add-drug-space"></div>
+    <!-- End Add Drug Space -->
+    <div class="col-md-3 empty-div remove-content">
+
+    </div>
+    <div class="col-md-4 interaction-two-col remove-content">
+      <div class="form-group col-md-10">
+        <input type="text" class="form-control" id="interaction-two-name" list="interaction-two-list"
+          name="interaction-two-name" autocomplete="off">
+        <datalist id="interaction-two-list">
+        </datalist>
+      </div>
+    </div>
+    <!-- Add Supplement -->
+    <div class="col-md-2 add-button">
+      <button class='btn btn-primary'>Add</button>
+    </div>
+    <!-- End Add Supplement -->
+    <div class="col-md-1">
+      <button class="btn btn-primary" id="search-button">Search</button>
+    </div>
+    <div class="col-md-1"></div>
+  </div>
+  <div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-10 graph"></div>
+    <!-- <div class="col-md-2"></div> -->
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    // var interactionTwoValues = [];
+    $('.error-message').hide();
+    $('.hide').hide();
+    var relationship = {
+      'drug': {
+        'interacts_with': ['Ingredients', 'Dietary Supplements']
+      },
+      'dsp': {
+        'interacts_with': ['Drugs'],
+        'has': ['Ingredients', 'Adverse Reactions']
+      },
+      'ingredient': {
+        'is_effective_for': ['Disease'],
+        'has': ['Adverse Reactions']
+      }
+    }
+
+
+    $('#interaction-one').change(function () {
+      $('.hide').hide();
+      $('.graph').html('');
+      $('.add-button').hide();
+      var interactionOne = $('#interaction-one').val();
+
+      var optionString = '';
+      $("#relationship").html('');
+      $("#interaction-two").html('');
+      $("#interaction-one-name").val('');
+      optionString += "<option value = '' selected disabled> Please Select </option>";
+      for (var prop in relationship[interactionOne]) {
+        optionString += "<option value='" + prop + "'>" + prop + "</option>";
+      }
+      $("#relationship").append(optionString);
+    });
+    $('#relationship').change(function () {
+      var interactionTwo = '';
+      var interactionOne = $('#interaction-one').val();
+
+      $("#interaction-two").html('');
+      var relationshipVal = $("#relationship").val();
+      var interactionTwoValues = relationship[interactionOne][relationshipVal];
+
+      interactionTwo += "<option value = '' selected disabled> Please Select </option>";
+      for (var i = 0; i < interactionTwoValues.length; i++) {
+        interactionTwo += "<option value='" + interactionTwoValues[i] + "'>" + interactionTwoValues[i] + "</option>";
+      }
+      $("#interaction-two").append(interactionTwo);
+    });
+    $("#interaction-two").change(function () {
+      $('.hide').show();
+      var interactionTwo = $('#interaction-two').val();
+      if (interactionTwo == 'Adverse Reactions' || interactionTwo == 'Disease') {
+        $('.interaction-two-col').hide();
+        $('.empty-div').hide();
+      } else {
+        $('.interaction-two-col').show();
+        $('.empty-div').show();
+      }
+    });
+
+    var values = {
+      "dsp": 1,
+      "drug": 2,
+      "ingredient": 3
+    }
+    var interactionTwoMapping = {
+      'Ingredients': 3,
+      'Drugs': 2,
+      'Dietary Supplements': 1
+    }
+
+    $("#interaction-one-name").on("focus change keydown", function () {
+      $("#interaction-one-list").empty();
+
+      var interactionOneName = $("#interaction-one-name").val();
+      var interactionOne = $('#interaction-one').val();
+      if ($('#interaction-one').val()) {
+        $.ajax({
+          type: 'GET',
+          crossDomain: true,
+          // dataType: 'jsonp',
+          url: 'http://localhost:8080/KeyWords?type=' + values[interactionOne] + '&name=' + interactionOneName,
+          success: function (jsondata) {
+            $("#interaction-one-list").empty();
+            $.each(jsondata, function (key, value) {
+              $("#interaction-one-list").append("<option value=\"" + value + "\">")
+            })
+          }
+        });
+      }
+    });
+
+    $("#interaction-two-name").on("focus change keydown", function () {
+      if ($('#interaction-one-name').val() == '') {
+        $('.error-message').html('Please add ' + $('#interaction-one').val());
+        $('.error-message').show();
+      } else if ($('#interaction-two').val() != '') {
+        var interactionTwo = $("#interaction-two").val();
+        var interactioTwoName = $("#interaction-two-name").val();
+        $("#interaction-two-list").empty();
+        if (interactionTwo == 'Ingredients' || interactionTwo == 'Drugs' || interactionTwo == 'Dietary Supplements') {
+          $.ajax({
+            type: 'GET',
+            crossDomain: true,
+            // dataType: 'jsonp',
+            url: 'http://localhost:8080/KeyWords?type=' + interactionTwoMapping[interactionTwo] + '&name=' + interactioTwoName,
+            success: function (jsondata) {
+              $("#interaction-two-list").empty();
+              $.each(jsondata, function (key, value) {
+                $("#interaction-two-list").append("<option value=\"" + value + "\">")
+              })
+            }
+          });
+        }
+      }
+    });
+
+    $("#interaction-two").on("change", function () {
+      var interactionOne = $("#interaction-one").val();
+      var interactionTwo = $("#interaction-two").val();
+      console.log(interactionOne, interactionTwo);
+      if (interactionOne == "drug" && interactionTwo == "Dietary Supplements") {
+        $(".empty-div").hide();
+        $("#search-button").hide();
+        $(".add-button").show();
+      }
+    })
+    $("#search-button").on("click", function () {
+      $('.graph').html('');
+      var interactionOne = $("#interaction-one").val();
+      var interactionTwo = $("#interaction-two").val();
+      var interactionOneName = $('#interaction-one-name').val();
+      var interactionTwoName = $('#interaction-two-name').val();
+      console.log(interactionTwoName, interactionOneName);
+      if ($('#interaction-one-name').val() != '' && $('#interaction-two-name').val() == '') {
+        if (interactionOne == 'dsp' && interactionTwo == 'Adverse Reactions') {
+          $.ajax({
+            type: 'GET',
+            crossDomain: true,
+            // dataType: 'jsonp',
+            url: 'http://localhost:8080/DSPAdverseReaction?type=1&name=' + interactionOneName,
+            success: function (jsondata) {
+
+              data = convertToTreeFormat(interactionOneName, jsondata.sort());
+              visualizeTreeData(data);
+            }
+          });
+
+        } else if (interactionOne == 'ingredient' && interactionTwo == 'Disease') {
+          console.log("now");
+          $.ajax({
+            type: 'GET',
+            crossDomain: true,
+            // dataType: 'jsonp',
+            url: 'http://localhost:8080/IngredientEffectiveFor?type=3&name=' + interactionOneName,
+            success: function (jsondata) {
+              data = convertToTreeFormat(interactionOneName, jsondata.sort());
+              visualizeTreeData(data);
+            }
+          });
+
+        } else if (interactionOne == 'ingredient' && interactionTwo == 'Adverse Reactions') {
+          console.log("now");
+          $.ajax({
+            type: 'GET',
+            crossDomain: true,
+            // dataType: 'jsonp',
+            url: 'http://localhost:8080/IngredientEffectiveFor?type=3&name=' + interactionOneName,
+            success: function (jsondata) {
+              data = convertToTreeFormat(interactionOneName, jsondata.sort());
+              visualizeTreeData(data);
+            }
+          });
+
+        }
+      }
+    });
+
+    function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+    function convertToTreeFormat(name, jsondata) {
+      var children = [];
+      var threshold = 60
+      var len = jsondata.length
+      for (var i = 0; i < jsondata.length; i++) {
+        console.log(jsondata.length);
+        children.push({
+          "name": capitalizeFirstLetter(jsondata[i].toLowerCase()),
+          "parent": name
+        });
+      }
+      var treeData = [{
+        "name": capitalizeFirstLetter(name.toLowerCase()),
+        "parent": null,
+        "children": children
+      }];
+      return treeData;
+    }
+
+    function visualizeTreeData(data) {
+      var margin = { top: 20, right: 120, bottom: 20, left: 200 },
+        width = 960 - margin.right - margin.left,
+        height = 600 - margin.top - margin.bottom;
+
+      var i = 0;
+
+      var tree = d3.layout.tree()
+        .size([height, width]);
+
+      var diagonal = d3.svg.diagonal()
+        .projection(function (d) { return [d.y, d.x]; });
+
+      var svg = d3.select(".graph").append("svg")
+        .attr("width", width + margin.right + margin.left)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      root = data[0];
+
+      update(root);
+
+      function update(source) {
+
+        // Compute the new tree layout.
+        var nodes = tree.nodes(root).reverse(),
+          links = tree.links(nodes);
+
+        // Normalize for fixed-depth.
+        nodes.forEach(function (d) { d.y = d.depth * 180; });
+
+        // Declare the nodes…
+        var node = svg.selectAll("g.node")
+          .data(nodes, function (d) { return d.id || (d.id = ++i); });
+
+        // Enter the nodes.
+        var nodeEnter = node.enter().append("g")
+          .attr("class", "node")
+          .attr("transform", function (d) {
+            return "translate(" + d.y + "," + d.x + ")";
+          });
+
+        nodeEnter.append("circle")
+          .attr("r", 10)
+          .style("fill", "#fff");
+
+        nodeEnter.append("text")
+          .attr("class", "node-text")
+          .attr("x", function (d) {
+            return d.children || d._children ? -13 : 13;
+          })
+          .attr("dy", ".35em")
+          .attr("text-anchor", function (d) {
+            return d.children || d._children ? "end" : "start";
+          })
+          .text(function (d) { return d.name; })
+          .style("fill-opacity", 1)
+        // .call(wrap, 250);
+
+        // Declare the links…
+        var link = svg.selectAll("path.link")
+          .data(links, function (d) { return d.target.id; });
+
+        // Enter the links.
+        link.enter().insert("path", "g")
+          .attr("class", "link")
+          .attr("d", diagonal);
+
+
+        // function wrap(text, width) {
+        //   text.each(function () {
+        //     var text = d3.select(this),
+        //       words = text.text().split(/\s+/).reverse(),
+        //       word,
+        //       line = [],
+        //       lineNumber = 1,
+        //       lineHeight = 12, // ems
+        //       y = text.attr("y"),
+        //       dy = parseFloat(text.attr("dy")),
+        //       tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "px");
+        //     while (word = words.pop()) {
+        //       line.push(word);
+        //       tspan.text(line.join(" "));
+        //       if (tspan.node().getComputedTextLength() > width) {
+        //         line.pop();
+        //         tspan.text(line.join(" "));
+        //         line = [word];
+        //         tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight * 0.75 + (dy) + "px").text(word);
+        //       }
+        //     }
+        //   });
+        // }
+
+      }
+
+    }
+
+
+  });
+
+
+
+</script>

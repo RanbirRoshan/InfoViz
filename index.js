@@ -129,6 +129,11 @@ app.get("/interactions", function (req, res) {
     res.render("interactions");
 })
 
+app.get("/overview", function (req, res) {
+    console.log("overview API");
+    res.render("overview");
+})
+
 app.listen(8080);
 console.log("server started")
 module.exports = app
