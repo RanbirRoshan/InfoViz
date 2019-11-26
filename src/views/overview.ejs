@@ -242,7 +242,7 @@
     }
 
     $("#interaction-one-name").on("focus change keydown", function () {
-      console.log("interaction one name");
+      // console.log("interaction one name");
       $("#interaction-one-list").empty();
 
       var interactionOneName = $("#interaction-one-name").val();
@@ -296,7 +296,7 @@
       var interactionTwo = $("#interaction-two").val();
       var interactionOneName = $('#interaction-one-name').val();
       var interactionTwoName = $('#interaction-two-name').val();
-      console.log(interactionTwoName, interactionOneName);
+      // console.log(interactionTwoName, interactionOneName);
       if ($('#interaction-one-name').val() != '' && $('#interaction-two-name').val() == '') {
 
         if (interactionOne == 'dsp' && interactionTwo == 'Adverse Reactions') {
@@ -313,7 +313,7 @@
           });
 
         } else if (interactionOne == 'ingredient' && interactionTwo == 'Disease') {
-          console.log("now");
+          // console.log("now");
           $.ajax({
             type: 'GET',
             crossDomain: true,
@@ -326,7 +326,7 @@
           });
 
         } else if (interactionOne == 'ingredient' && interactionTwo == 'Adverse Reactions') {
-          console.log("now");
+          // console.log("now");
           $.ajax({
             type: 'GET',
             crossDomain: true,
@@ -367,7 +367,7 @@
     });
 
     function DrugSupplementAPI(drugs, supplements) {
-      console.log("d and s", drugs, supplements);
+      // console.log("d and s", drugs, supplements);
       var data = [];
       var supplements1 = supplements.join(",");
       var len = drugs.length
@@ -379,7 +379,7 @@
           crossDomain: true,
           url: 'http://localhost:8080/SupVsMed?drug=' + drug + '&supp=' + supplements1,
           success: function (jsondata1) {
-            console.log("Before", jsondata1)
+            // console.log("Before", jsondata1)
             data.push(jsondata1);
             common_data = common_data + jsondata1[1]
             data_rec = data_rec + 1
@@ -387,10 +387,10 @@
               var common_data1 = new Set(common_data);
               var common_data2 = new Set(supplements);
               var diff = Array.from(new Set([...common_data2].filter(x => !common_data1.has(x))));
-              console.log(diff)
-              console.log(common_data)
-              console.log(supplements)
-              console.log("ranbj")
+              // console.log(diff)
+              // console.log(common_data)
+              // console.log(supplements)
+              // console.log("ranbj")
               diff.forEach(function (d) {
                 data.push(["", [d]]);
               })
@@ -411,14 +411,15 @@
       var children = [];
 
       for (var i = 0; i < jsondata.length; i++) {
-        console.log(jsondata.length);
+        // console.log(jsondata.length);
         children.push({
           "name": capitalizeFirstLetter(jsondata[i].toLowerCase()),
           "actualName": jsondata[i], 
           "parent": name,
           "type": childType,
           "isExpanded": false,
-          "canExpand": true
+          "canExpand": true,
+          "isRoot": false
         });
       }
       var treeData = [{
@@ -427,69 +428,111 @@
         "parent": null,
         "children": children,
         "type": parentType,
-        "isExpanded": true
+        "isExpanded": false,
+        "isRoot": true
       }];
 
-      console.log(treeData)
+      // console.log(treeData)
       return treeData;
     }
 
-    function addToTreedata(name, jsondata, parentType, childType, treeData) {
+    function updateDataOnClick(name, jsondata, parentType, childType, existingTreedata) {
       var children = [];
 
       for (var i = 0; i < jsondata.length; i++) {
-        console.log(jsondata.length);
+        // console.log(jsondata.length);
         children.push({
           "name": capitalizeFirstLetter(jsondata[i].toLowerCase()),
           "actualName": jsondata[i], 
           "parent": name,
           "type": childType,
           "isExpanded": false,
-          "canExpand": true
+          "canExpand": true,
+          "isRoot": false
         });
       }
 
-      // var searchNode = tr
-      var treeData = [{
-        "name": capitalizeFirstLetter(name.toLowerCase()),
-        "actualName": name,
-        "parent": null,
-        "children": children,
-        "type": parentType,
-        "isExpanded": true
-      }];
-      return treeData;
+      existingTreedata.children = children
+      existingTreedata.isExpanded = true
+
+      console.log("existing tree data: ", data)
     }
 
-
-
-    function expandNodes(d){
-      console.log("Calling expand nodes")
+    function getDetails(d){
+      var type = -1
       
-      if (d.data.type == 'dsp'){
-        $.ajax({
-          type: 'GET',
-          crossDomain: true,
-          // dataType: 'jsonp',
-          url: 'http://localhost:8080/DSPIngredients?type=1&name=' + d.data.actualName,
-          success: function (ajaxData) {
-            d.data.children = []
-
-            console.log(data)
-            
-            return;
-            // console.log(data);
-            // var uniqueData = Array.from(new Set(data));
-            // $('.dsp-ingredients-view #graph-3').html('');
-            // myFunction(ingredient);
-          }
-        });
-
+      if (d.data.type == 'dsp') {
+        type = 1
+      } else if (d.data.type == 'drug') {
+        type = 2
+      } else if (d.data.type == 'Ingredients') {
+        type = 3
+      } else if (d.data.type == 'symptom') {
+        type = 4
+      } else if (d.data.type == 'disease') {
+        type = 5
+      } else if (d.data.type == 'therapeutic class') {
+        type = 6
+      } else if (d.data.type == 'soc') {
+        type = 7
       }
-      return;
+
+      $.ajax({
+            type: 'GET',
+            crossDomain: true,
+            // dataType: 'jsonp',
+            url: 'http://localhost:8080/DSPIngredients?type=' + type + '&name=' + d.data.actualName,
+            success: function (ajaxData) {
+
+              console.log(ajaxData)
+              return;
+            }
+        });
+    }
+
+    function expandCollapse(d){
+      if (d.data.isExpanded == false){
+        var url = ""
+        var targetType = ""
+
+        if (d.data.type == 'dsp'){
+          url = 'http://localhost:8080/DSPIngredients?type=1&name=' + d.data.actualName
+          targetType = "Ingredients"
+        } else if (d.data.type == 'Ingredients'){
+          url = 'http://localhost:8080/IngredientInteractsWithDrug?type=1&name=' + d.data.actualName
+          targetType = "drug"
+        }
+
+        $.ajax({
+            type: 'GET',
+            crossDomain: true,
+            // dataType: 'jsonp',
+            url: url,
+            success: function (ajaxData) {
+
+              updateDataOnClick(d.data.name, ajaxData, d.data.type, targetType, d.data)
+
+              console.log(ajaxData)
+              visualizeTreeData(data)
+              return;
+              // // console.log(data);
+              // var uniqueData = Array.from(new Set(data));
+              // $('.dsp-ingredients-view #graph-3').html('');
+              // myFunction(ingredient);
+            }
+        });
+      } else if (d.data.isRoot == false) {
+        d.data.children = []
+        d.data.isExpanded = false
+        visualizeTreeData(data)
+      }
     }
 
     function visualizeTreeData(data) {
+      // Emptying the div because might be redrawing
+      $(".graph").html("")
+
+
       var margin = { top: 20, right: 120, bottom: 20, left: 200 },
         width = 960 - margin.right - margin.left,
         height = (data[0].children.length*26) - margin.top - margin.bottom;
@@ -529,7 +572,7 @@
 
         // Normalize for fixed-depth.
         nodes.forEach(function (d) { d.y = d.depth * 180; });
-        console.log("Nodes", nodes)
+        // console.log("Nodes", nodes)
         // Declare the nodes…
         var node = svg.selectAll("g.node")
           .data(nodes, function (d) { return d.id || (d.id = ++i); });
@@ -544,9 +587,12 @@
         nodeEnter.append("circle")
           .attr("r", 10)
           .style("fill", "#fff")
+          .on("mouseover", function(d){
+            getDetails(d)
+          })
           .on("click", function(d) {
-            console.log("Data for expand nodes: ", d)
-            expandNodes(d)
+            // console.log("Data for expand nodes: ", d)
+            expandCollapse(d)
           });
 
         nodeEnter.append("text")
@@ -603,7 +649,7 @@
 
     }
     function visualizeDrugSupplement(jsondata) {
-      console.log("final data", jsondata);
+      // console.log("final data", jsondata);
       // jd1 = [["a", ["b"]], ["cd", []], ["", ["sd"]]]
       // jsondata = jd1
 
@@ -614,16 +660,16 @@
       var outerId = [0];
 
 
-      // console.log(data.outer.reduce(function (a, b) { return a + b.related_links.length; }, 0) / data.outer.length);
-      console.log("abcdbbcdbcbdbcb")
-      console.log(jsondata, jsondata.length);
+      // // console.log(data.outer.reduce(function (a, b) { return a + b.related_links.length; }, 0) / data.outer.length);
+      // console.log("abcdbbcdbcbdbcb")
+      // console.log(jsondata, jsondata.length);
       jsondata.forEach(function (d) {
-        console.log("hi i am here")
+        // console.log("hi i am here")
         if (d == null)
           return;
 
         i = { id: 'i' + inner.length, index: inner.length, name: d[0], related_links: [] };
-        console.log(i)
+        // console.log(i)
         i.related_nodes = [i.id];
         if (i.name != "") {
           inner.push(i);
@@ -638,7 +684,7 @@
 
           if (o == null) {
             o = { name: d1, id: 'o' + outerId[0], related_links: [] };
-            console.log(o)
+            // console.log(o)
             o.related_nodes = [o.id];
             outerId[0] = outerId[0] + 1;
             if (o.name != "") {
@@ -694,6 +740,7 @@
         .clamp(true);
 
       var diameter = 960;
+      var width = diameter;
       var rect_width = 40;
       var rect_height = 14;
 
@@ -704,7 +751,7 @@
 
       var inner_y = d3.scaleLinear()
         .domain([0, il])
-        .range([-(il * rect_height) / 2, (il * rect_height) / 2]);
+        .range([-(il * rect_height), (il * rect_height)]);
 
       mid = (data.outer.length / 2.0)
       var outer_x = d3.scaleLinear()
@@ -716,7 +763,7 @@
       //     .range([0, diameter / 2 - 120]);
       var outer_y = d3.scaleLinear()
         .domain([0, ol])
-        .range([-(ol * rect_height) / 2, (ol * rect_height) / 2]);
+        .range([-(ol * rect_height), (ol * rect_height)]);
 
 
       // setup positioning
@@ -734,8 +781,8 @@
 
 
       function get_color(a, v) {
-        console.log("Color parameters" + a + "    " + v);
-        console.log(d3.interpolateRainbow(v / a))
+        // console.log("Color parameters" + a + "    " + v);
+        // console.log(d3.interpolateRainbow(v / a))
         return d3.interpolateRainbow(v / a);
         // var c = Math.round(color(name));
         //     if (isNaN(c))
@@ -763,10 +810,10 @@
       }
 
       var svg = d3.select(".graph").append("svg")
-        .attr("width", diameter)
+        .attr("width", width)
         .attr("height", diameter)
         .append("g")
-        .attr("transform", "translate(" + diameter / 3 + "," + diameter / 3 + ")");
+        .attr("transform", "translate(" + width / 3 + "," + diameter / 3 + ")");
 
 
       // links
@@ -792,7 +839,7 @@
         .on("mouseout", mouseout);
 
       onode.append("rect")
-        .attr('width', rect_width * 2.5)
+        .attr('width', rect_width * 8)
         .attr('height', rect_height)
         .attr('id', function (d) { return d.id; })
         .attr('fill', function (d) { return "#ffffff"; });
@@ -815,12 +862,12 @@
         .data(data.inner)
         .enter().append("g")
         .attr("class", "inner_node")
-        .attr("transform", function (d, i) { return "translate(" + d.x + "," + d.y + ")" })
+        .attr("transform", function (d, i) { return "translate(" + (d.x - (2*rect_width)) + "," + d.y + ")" })
         .on("mouseover", mouseover)
         .on("mouseout", mouseout);
 
       inode.append('rect')
-        .attr('width', rect_width)
+        .attr('width', rect_width * 4)
         .attr('height', rect_height)
         .attr('id', function (d) { return d.id; })
         .attr('fill', function (d) { return "#ffffff"; });
