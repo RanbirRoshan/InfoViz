@@ -170,12 +170,15 @@
     </div>
   </div> -->
 <!-- End Drug and Supplement -->
-<div class="row">
+<div class="row checkbox-row">
   <div class="col-md-2 offset-md-10">
     <div class="form-check">
       <input type="checkbox" class="form-check-input" id="change-view">
       <label class="form-check-label" for="change-view">Change View</label>
     </div>
+  </div>
+  <div class="col-md-2 offset-md-10">
+    <p style="color:steelblue"><u>Note</u>: Click on the nodes to expand</p>
   </div>
 </div>
 <div class="row graph-visualization">
@@ -198,6 +201,7 @@
   $(document).ready(function () {
     $("#accordion").accordion({ heightStyle: "content" });
     $('.overview-header').hide();
+    $('.checkbox-row').hide();
     // var interactionTwoValues = [];
     // $('.error-message').hide();
     // $('.hide').hide();
@@ -310,6 +314,7 @@
     });
 
     $("#search-button").on("click", function () {
+      $(".checkbox-row").show();
       var interactionOne = $('#interaction-one').val();
       var interactionOneName = $("#interaction-one-name").val();
 
@@ -355,10 +360,13 @@
       function () {
         if (this.checked) {
           $('.graph').html('');
+          $('.overview-header').hide();
           console.log('checkbox clicked');
+          $('#accordion').html('');
           changeview();
         } else {
           $('.graph').html();
+          $('#accordion').html('');
           changeToTreeView();
         }
       });

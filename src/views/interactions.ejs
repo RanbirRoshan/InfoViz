@@ -85,7 +85,7 @@
     <div class="col-md-3 offset-md-1 remove-content">
       <div class="form-group">
         <input type="text" class="form-control" id="interaction-one-name" list="interaction-one-list"
-          name="interaction-one-name" autocomplete="off">
+          name="interaction-one-name" autocomplete="off" placeholder="Please Type">
         <datalist id="interaction-one-list">
         </datalist>
       </div>
@@ -102,7 +102,7 @@
     <div class="col-md-4 interaction-two-col remove-content">
       <div class="form-group col-md-10">
         <input type="text" class="form-control" id="interaction-two-name" list="interaction-two-list"
-          name="interaction-two-name" autocomplete="off">
+          name="interaction-two-name" autocomplete="off" placeholder="Please Type">
         <datalist id="interaction-two-list">
         </datalist>
       </div>
@@ -178,6 +178,8 @@
     $('#interaction-one').change(function () {
       $('.hide').hide();
       $('.graph').html('');
+      supplements = [];
+      drugs = [];
       var interactionOne = $('#interaction-one').val();
 
       var optionString = '';
@@ -217,6 +219,7 @@
     });
 
     $("#interaction-two").on("change", function () {
+      $("#interaction-two-name").val('');
       var interactionOne = $("#interaction-one").val();
       var interactionTwo = $("#interaction-two").val();
       if (interactionOne == "drug" && interactionTwo == "Dietary Supplements") {
@@ -226,23 +229,29 @@
         $("#interaction-one-list").empty();
         $("#interaction-two-list").empty();
 
-      } else {
-        $('.drug-supplement').hide();
-        $('.normal').show();
-        $('.empty-div').hide();
-      }
-      if (interactionOne == "dsp" && interactionTwo == "Drugs") {
-
+      } else if (interactionOne == "dsp" && interactionTwo == "Drugs") {
         $('.drug-supplement').show();
         $('.normal').hide();
         $("#interaction-one-list").empty();
         $("#interaction-two-list").empty();
-
-      } else {
+      }
+      else {
         $('.drug-supplement').hide();
         $('.normal').show();
         $('.empty-div').hide();
       }
+      // if (interactionOne == "dsp" && interactionTwo == "Drugs") {
+
+      //   $('.drug-supplement').show();
+      //   $('.normal').hide();
+      //   $("#interaction-one-list").empty();
+      //   $("#interaction-two-list").empty();
+
+      // } else {
+      //   $('.drug-supplement').hide();
+      //   $('.normal').show();
+      //   $('.empty-div').hide();
+      // }
     });
 
     $("#interaction-two").on("change", function () {
@@ -376,28 +385,55 @@
     });
 
     $('.add-button-drug').on("click", function () {
+      var interactionOne = $("#interaction-one").val();
+      if (interactionOne == "dsp") {
+        console.log(interactionOne);
+        if ($("#interaction-one-name").val() != "") {
 
-      var interactionOneName = $("#interaction-one-name").val();
-      if (interactionOneName != '') {
-        drugs.push(interactionOneName);
-        $('#interaction-one-list').empty();
-        // $("#interaction-one-name").val('');
-        var drugs1 = Array.from(new Set(drugs));
-        var supplements1 = Array.from(new Set(supplements))
-        DrugSupplementAPI(drugs1, supplements1);
+          supplements.push($("#interaction-one-name").val());
+          $('#interaction-one-list').empty();
+          // $("#interaction-one-name").val('');
+          var drugs1 = Array.from(new Set(drugs));
+          var supplements1 = Array.from(new Set(supplements))
+          DrugSupplementAPI(drugs1, supplements1);
+        }
+      } else {
+        var interactionOneName = $("#interaction-one-name").val();
+        if (interactionOneName != '') {
+          drugs.push(interactionOneName);
+          $('#interaction-one-list').empty();
+          // $("#interaction-one-name").val('');
+          var drugs1 = Array.from(new Set(drugs));
+          var supplements1 = Array.from(new Set(supplements))
+          DrugSupplementAPI(drugs1, supplements1);
+        }
       }
+
     });
 
     $('.add-button-supplement').on("click", function () {
-      var interactionTwoName = $("#interaction-two-name").val();
-      if (interactionTwoName != '') {
-        supplements.push(interactionTwoName);
-        $('#interaction-two-list').empty();
-        var supplements1 = Array.from(new Set(supplements))
-        var drugs1 = Array.from(new Set(drugs));
-        // $("#interaction-two-name").val('');
-        DrugSupplementAPI(drugs1, supplements1);
+      var interactionTwo = $("#interaction-two").val();
+      if (interactionTwo == "Drugs") {
+        if ($("#interaction-two-name").val() != "") {
+          drugs.push($("#interaction-two-name").val());
+          $('#interaction-two-list').empty();
+          // $("#interaction-one-name").val('');
+          var drugs1 = Array.from(new Set(drugs));
+          var supplements1 = Array.from(new Set(supplements))
+          DrugSupplementAPI(drugs1, supplements1);
+        }
+      } else {
+        var interactionTwoName = $("#interaction-two-name").val();
+        if (interactionTwoName != '') {
+          supplements.push(interactionTwoName);
+          $('#interaction-two-list').empty();
+          var supplements1 = Array.from(new Set(supplements))
+          var drugs1 = Array.from(new Set(drugs));
+          // $("#interaction-two-name").val('');
+          DrugSupplementAPI(drugs1, supplements1);
+        }
       }
+
     });
 
     function DrugSupplementAPI(drugs, supplements) {
@@ -435,6 +471,10 @@
         });
       });
 
+      // if($("#interaction-one").val() == "dsp" && $("#interaction-two").val() == "Drugs"){
+
+      // }
+
     }
 
     function capitalizeFirstLetter(string) {
@@ -462,7 +502,7 @@
     }
 
     function visualizeTreeData(data) {
-      var margin = { top: 20, right: 120, bottom: 20, left: 200 },
+      var margin = { top: 20, right: 120, bottom: 20, left: 250 },
         width = 960 - margin.right - margin.left,
         height = (data[0].children.length * 40) - margin.top - margin.bottom;
 
@@ -663,7 +703,7 @@
         .range([colors.length - 1, 0])
         .clamp(true);
 
-      var diameter = 960;
+      var diameter = 930;
       var rect_width = 40;
       var rect_height = 14;
 
@@ -674,19 +714,20 @@
 
       var inner_y = d3.scaleLinear()
         .domain([0, il])
-        .range([-(il * rect_height) / 2, (il * rect_height) / 2]);
+        .range([-(il * rect_height), (il * rect_height)]);
 
       mid = (data.outer.length / 2.0)
-      var outer_x = d3.scaleLinear()
-        .domain([0, mid, mid, data.outer.length])
-        .range([15, 170, 190, 355]);
-
-      // var outer_y = d3.scale.linear()
-      //     .domain([0, data.outer.length])
-      //     .range([0, diameter / 2 - 120]);
       var outer_y = d3.scaleLinear()
         .domain([0, ol])
-        .range([-(ol * rect_height) / 2, (ol * rect_height) / 2]);
+        .range([-(ol * rect_height), (ol * rect_height)]);
+
+
+      // setup positioning
+      data.outer = data.outer.map(function (d, i) {
+        d.x = (diameter / 2 - diameter / 4);
+        d.y = outer_y(i);
+        return d;
+      });
 
 
       // setup positioning
@@ -762,7 +803,7 @@
         .on("mouseout", mouseout);
 
       onode.append("rect")
-        .attr('width', rect_width * 2.5)
+        .attr('width', rect_width * 8)
         .attr('height', rect_height)
         .attr('id', function (d) { return d.id; })
         .attr('fill', function (d) { return "#ffffff"; });
@@ -790,7 +831,7 @@
         .on("mouseout", mouseout);
 
       inode.append('rect')
-        .attr('width', rect_width)
+        .attr('width', rect_width * 4)
         .attr('height', rect_height)
         .attr('id', function (d) { return d.id; })
         .attr('fill', function (d) { return "#ffffff"; });
