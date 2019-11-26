@@ -11,13 +11,43 @@
     stroke-width: 3px;
   }
 
-  .node text {
+  /* .node text {
     font: 12px sans-serif;
+  } */
+
+  .tree-link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 2px;
+  }
+
+  .add-button-supplement {
+    margin-left: -70px;
+  }
+
+  /* code pen css */
+  text {
+    pointer-events: none;
+  }
+
+  .inner_node rect {
+    pointer-events: all;
   }
 
   .link {
     fill: none;
-    stroke: #ccc;
+
+    stroke-width: 2px;
+  }
+
+  .inner_node rect.highlight {
+    stroke: #315B7E;
+    stroke-width: 2px;
+  }
+
+
+  .outer_node rect.highlight {
+    stroke: #315B7E;
     stroke-width: 2px;
   }
 </style>
@@ -60,15 +90,13 @@
         </datalist>
       </div>
     </div>
-    <!-- Add Drug -->
-    <div class="col-md-2 add-button">
-      <button class='btn btn-primary'>Add</button>
+    <!-- Drug and Supplement -->
+    <div class="col-md-1 drug-supplement">
+      <button class="btn btn-primary add-button-drug ">Add</button>
     </div>
-    <!-- End Add Drug -->
-    <!-- Add Drug space -->
-    <div class="col-md-2 add-drug-space"></div>
-    <!-- End Add Drug Space -->
-    <div class="col-md-3 empty-div remove-content">
+    <div class="col-md-2 drug-supplement"></div>
+    <!-- End Drug and Supplement -->
+    <div class="col-md-3 empty-div remove-content normal">
 
     </div>
     <div class="col-md-4 interaction-two-col remove-content">
@@ -79,17 +107,45 @@
         </datalist>
       </div>
     </div>
-    <!-- Add Supplement -->
-    <div class="col-md-2 add-button">
-      <button class='btn btn-primary'>Add</button>
+    <!-- Drug and Supplement -->
+    <div class="col-md-1 drug-supplement">
+      <button class="btn btn-primary add-button-supplement">Add</button>
     </div>
-    <!-- End Add Supplement -->
+    <!-- End Drug and Supplement -->
     <div class="col-md-1">
-      <button class="btn btn-primary" id="search-button">Search</button>
+      <button class="btn btn-primary normal" id="search-button">Search</button>
+    </div>
+    <div class="col-md-1 normal"></div>
+  </div>
+
+  <!-- Drug and Supplement -->
+  <!-- <div class="row mt-3 drug-supplement">
+    <div class="col-md-3 offset-md-1">
+      <div class="form-group">
+        <input type="text" class="form-control" id="interaction-one-name" list="interaction-one-list"
+          name="interaction-one-name" autocomplete="off">
+        <datalist id="interaction-one-list">
+        </datalist>
+      </div>
+    </div>
+    <div class="col-md-1">
+      <button class="btn btn-primary add-button">Add</button>
     </div>
     <div class="col-md-1"></div>
-  </div>
-  <div class="row">
+    <div class="col-md-3 offset-md-1 interaction-two-margin">
+      <div class="form-group">
+        <input type="text" class="form-control" id="interaction-two-name" list="interaction-two-list"
+          name="interaction-two-name" autocomplete="off">
+        <datalist id="interaction-two-list">
+        </datalist>
+      </div>
+    </div>
+    <div class="col-md-1">
+      <button class="btn btn-primary add-button">Add</button>
+    </div>
+  </div> -->
+  <!-- End Drug and Supplement -->
+  <div class="row graph-visualization">
     <div class="col-md-2"></div>
     <div class="col-md-10 graph"></div>
     <!-- <div class="col-md-2"></div> -->
@@ -100,6 +156,7 @@
     // var interactionTwoValues = [];
     $('.error-message').hide();
     $('.hide').hide();
+    $('.drug-supplement').hide();
     var relationship = {
       'drug': {
         'interacts_with': ['Ingredients', 'Dietary Supplements']
@@ -118,7 +175,6 @@
     $('#interaction-one').change(function () {
       $('.hide').hide();
       $('.graph').html('');
-      $('.add-button').hide();
       var interactionOne = $('#interaction-one').val();
 
       var optionString = '';
@@ -157,6 +213,23 @@
       }
     });
 
+    $("#interaction-two").on("change", function () {
+      var interactionOne = $("#interaction-one").val();
+      var interactionTwo = $("#interaction-two").val();
+      if (interactionOne == "drug" && interactionTwo == "Dietary Supplements") {
+
+        $('.drug-supplement').show();
+        $('.normal').hide();
+        $("#interaction-one-list").empty();
+        $("#interaction-two-list").empty();
+
+      } else {
+        $('.drug-supplement').hide();
+        $('.normal').show();
+        $('.empty-div').hide();
+      }
+    })
+
     var values = {
       "dsp": 1,
       "drug": 2,
@@ -169,6 +242,7 @@
     }
 
     $("#interaction-one-name").on("focus change keydown", function () {
+      console.log("interaction one name");
       $("#interaction-one-list").empty();
 
       var interactionOneName = $("#interaction-one-name").val();
@@ -214,16 +288,8 @@
       }
     });
 
-    $("#interaction-two").on("change", function () {
-      var interactionOne = $("#interaction-one").val();
-      var interactionTwo = $("#interaction-two").val();
-      console.log(interactionOne, interactionTwo);
-      if (interactionOne == "drug" && interactionTwo == "Dietary Supplements") {
-        $(".empty-div").hide();
-        $("#search-button").hide();
-        $(".add-button").show();
-      }
-    })
+    var drugs = [];
+    var supplements = [];
     $("#search-button").on("click", function () {
       $('.graph').html('');
       var interactionOne = $("#interaction-one").val();
@@ -232,6 +298,7 @@
       var interactionTwoName = $('#interaction-two-name').val();
       console.log(interactionTwoName, interactionOneName);
       if ($('#interaction-one-name').val() != '' && $('#interaction-two-name').val() == '') {
+
         if (interactionOne == 'dsp' && interactionTwo == 'Adverse Reactions') {
           $.ajax({
             type: 'GET',
@@ -275,14 +342,74 @@
       }
     });
 
+    $('.add-button-drug').on("click", function () {
+      var interactionOneName = $("#interaction-one-name").val();
+      if (interactionOneName != '') {
+        drugs.push(interactionOneName);
+        $('#interaction-one-list').empty();
+        // $("#interaction-one-name").val('');
+        var drugs1 = Array.from(new Set(drugs));
+        var supplements1 = Array.from(new Set(supplements))
+        DrugSupplementAPI(drugs1, supplements1);
+      }
+    });
+
+    $('.add-button-supplement').on("click", function () {
+      var interactionTwoName = $("#interaction-two-name").val();
+      if (interactionTwoName != '') {
+        supplements.push(interactionTwoName);
+        $('#interaction-two-list').empty();
+        var supplements1 = Array.from(new Set(supplements))
+        var drugs1 = Array.from(new Set(drugs));
+        // $("#interaction-two-name").val('');
+        DrugSupplementAPI(drugs1, supplements1);
+      }
+    });
+
+    function DrugSupplementAPI(drugs, supplements) {
+      console.log("d and s", drugs, supplements);
+      var data = [];
+      var supplements1 = supplements.join(",");
+      var len = drugs.length
+      var data_rec = 0
+      var common_data = []
+      drugs.forEach(function (drug, index, arr) {
+        $.ajax({
+          type: 'GET',
+          crossDomain: true,
+          url: 'http://localhost:8080/SupVsMed?drug=' + drug + '&supp=' + supplements1,
+          success: function (jsondata1) {
+            console.log("Before", jsondata1)
+            data.push(jsondata1);
+            common_data = common_data + jsondata1[1]
+            data_rec = data_rec + 1
+            if (data_rec == len) {
+              var common_data1 = new Set(common_data);
+              var common_data2 = new Set(supplements);
+              var diff = Array.from(new Set([...common_data2].filter(x => !common_data1.has(x))));
+              console.log(diff)
+              console.log(common_data)
+              console.log(supplements)
+              console.log("ranbj")
+              diff.forEach(function (d) {
+                data.push(["", [d]]);
+              })
+              $('.graph').html('');
+              visualizeDrugSupplement(data);
+            }
+          }
+        });
+      });
+
+    }
+
     function capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
     function convertToTreeFormat(name, jsondata) {
       var children = [];
-      var threshold = 60
-      var len = jsondata.length
+
       for (var i = 0; i < jsondata.length; i++) {
         console.log(jsondata.length);
         children.push({
@@ -364,7 +491,7 @@
 
         // Enter the links.
         link.enter().insert("path", "g")
-          .attr("class", "link")
+          .attr("class", "tree-link")
           .attr("d", diagonal);
 
 
@@ -392,6 +519,267 @@
         //   });
         // }
 
+      }
+
+    }
+    function visualizeDrugSupplement(jsondata) {
+      console.log("final data", jsondata);
+      // jd1 = [["a", ["b"]], ["cd", []], ["", ["sd"]]]
+      // jsondata = jd1
+
+      var outer = d3.map();
+      var inner = [];
+      var links = [];
+
+      var outerId = [0];
+
+
+      // console.log(data.outer.reduce(function (a, b) { return a + b.related_links.length; }, 0) / data.outer.length);
+      console.log("abcdbbcdbcbdbcb")
+      console.log(jsondata, jsondata.length);
+      jsondata.forEach(function (d) {
+        console.log("hi i am here")
+        if (d == null)
+          return;
+
+        i = { id: 'i' + inner.length, index: inner.length, name: d[0], related_links: [] };
+        console.log(i)
+        i.related_nodes = [i.id];
+        if (i.name != "") {
+          inner.push(i);
+        }
+
+        if (!Array.isArray(d[1]))
+          d[1] = [d[1]];
+
+        d[1].forEach(function (d1) {
+
+          o = outer.get(d1);
+
+          if (o == null) {
+            o = { name: d1, id: 'o' + outerId[0], related_links: [] };
+            console.log(o)
+            o.related_nodes = [o.id];
+            outerId[0] = outerId[0] + 1;
+            if (o.name != "") {
+              outer.set(d1, o);
+            }
+          }
+
+          // create the links
+          l = { id: 'l-' + i.id + '-' + o.id, inner: i, outer: o }
+          if (o.name != "" && i.name != "") {
+            links.push(l);
+          }
+
+          if (o.name != "") {
+            // and the relationships
+            i.related_nodes.push(o.id);
+            o.related_links.push(l.id);
+          }
+          if (i.name != "") {
+            i.related_links.push(l.id);
+            o.related_nodes.push(i.id);
+          }
+        });
+      });
+
+      data = {
+        inner: inner,
+        outer: outer.values(),
+        links: links
+      }
+
+      // sort the data -- TODO: have multiple sort options
+      outer = data.outer;
+      data.outer = Array(outer.length);
+
+
+      var i1 = 0;
+      var i2 = outer.length - 1;
+
+      for (var i = 0; i < data.outer.length; ++i) {
+        if (i % 2 == 1)
+          data.outer[i2--] = outer[i];
+        else
+          data.outer[i1++] = outer[i];
+      }
+
+      // from d3 colorbrewer: 
+      // This product includes color specifications and designs developed by Cynthia Brewer (http://colorbrewer.org/).
+      var colors = ["#a50026", "#d73027", "#f46d43", "#fdae61", "#fee090", "#ffffbf", "#e0f3f8", "#abd9e9", "#74add1", "#4575b4", "#313695"]
+      var color = d3.scaleLinear()
+        .domain([10, 220])
+        .range([colors.length - 1, 0])
+        .clamp(true);
+
+      var diameter = 960;
+      var rect_width = 40;
+      var rect_height = 14;
+
+      var link_width = "1px";
+
+      var il = data.inner.length;
+      var ol = data.outer.length;
+
+      var inner_y = d3.scaleLinear()
+        .domain([0, il])
+        .range([-(il * rect_height) / 2, (il * rect_height) / 2]);
+
+      mid = (data.outer.length / 2.0)
+      var outer_x = d3.scaleLinear()
+        .domain([0, mid, mid, data.outer.length])
+        .range([15, 170, 190, 355]);
+
+      // var outer_y = d3.scale.linear()
+      //     .domain([0, data.outer.length])
+      //     .range([0, diameter / 2 - 120]);
+      var outer_y = d3.scaleLinear()
+        .domain([0, ol])
+        .range([-(ol * rect_height) / 2, (ol * rect_height) / 2]);
+
+
+      // setup positioning
+      data.outer = data.outer.map(function (d, i) {
+        d.x = (diameter / 2 - diameter / 4);
+        d.y = outer_y(i);
+        return d;
+      });
+
+      data.inner = data.inner.map(function (d, i) {
+        d.x = (-(diameter / 2 - diameter / 4));
+        d.y = inner_y(i);
+        return d;
+      });
+
+
+      function get_color(a, v) {
+        console.log("Color parameters" + a + "    " + v);
+        console.log(d3.interpolateRainbow(v / a))
+        return d3.interpolateRainbow(v / a);
+        // var c = Math.round(color(name));
+        //     if (isNaN(c))
+        //         return '#dddddd';	// fallback color
+
+        //     return colors[c];
+      }
+
+      // Can't just use d3.svg.diagonal because one edge is in normal space, the
+      // other edge is in radial space. Since we can't just ask d3 to do projection
+      // of a single point, do it ourselves the same way d3 would do it.  
+
+
+      function projectX(x) {
+        return ((x - 90) / 180 * Math.PI) - (Math.PI / 2);
+      }
+
+      var diagonal = function link(d) {
+        return "M "
+          + d.outer.x + " " + (d.outer.y + rect_height / 2)
+          + "C "
+          + (d.outer.x - 50) + " " + d.outer.y + " "
+          + (d.inner.x + rect_width + 50) + " " + d.inner.y + " "
+          + (d.inner.x + rect_width) + " " + (d.inner.y + rect_height / 2);
+      }
+
+      var svg = d3.select(".graph").append("svg")
+        .attr("width", diameter)
+        .attr("height", diameter)
+        .append("g")
+        .attr("transform", "translate(" + diameter / 3 + "," + diameter / 3 + ")");
+
+
+      // links
+      var link = svg.append('g').attr('class', 'links').selectAll(".link")
+        .data(data.links)
+        .enter().append('path')
+        .attr('class', 'link')
+        .attr('id', function (d) { return d.id })
+        .attr("d", diagonal)
+        .attr('stroke', function (d) { return get_color(data.inner.length, d.inner.index); })
+        .attr('stroke-width', link_width)
+        .style('opacity', 0.15);
+
+
+      // outer nodes
+
+      var onode = svg.append('g').selectAll(".outer_node")
+        .data(data.outer)
+        .enter().append("g")
+        .attr("class", "outer_node")
+        .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")" })
+        .on("mouseover", mouseover)
+        .on("mouseout", mouseout);
+
+      onode.append("rect")
+        .attr('width', rect_width * 2.5)
+        .attr('height', rect_height)
+        .attr('id', function (d) { return d.id; })
+        .attr('fill', function (d) { return "#ffffff"; });
+
+      // onode.append("circle")
+      //     .attr('r', 20)
+      //     .attr('visibility', 'hidden');
+
+      onode.append("text")
+        .attr('id', function (d) { return d.id + '-txt'; })
+        .attr("dy", ".31em")
+        .attr("text-anchor", function (d) { return "start"; })
+        .attr("transform", "translate(" + rect_width * 0.15 + ", " + rect_height * .5 + ")")
+        // .attr("cx", )
+        .text(function (d) { return d.name; });
+
+      // inner nodes
+
+      var inode = svg.append('g').selectAll(".inner_node")
+        .data(data.inner)
+        .enter().append("g")
+        .attr("class", "inner_node")
+        .attr("transform", function (d, i) { return "translate(" + d.x + "," + d.y + ")" })
+        .on("mouseover", mouseover)
+        .on("mouseout", mouseout);
+
+      inode.append('rect')
+        .attr('width', rect_width)
+        .attr('height', rect_height)
+        .attr('id', function (d) { return d.id; })
+        .attr('fill', function (d) { return "#ffffff"; });
+
+      inode.append("text")
+        .attr('id', function (d) { return d.id + '-txt'; })
+        .attr('text-anchor', 'start')
+        .attr("transform", "translate(" + (rect_width / 2) + ", " + rect_height * .75 + ")")
+        .text(function (d) { return d.name; });
+
+      // need to specify x/y/etc
+
+      d3.select(self.frameElement).style("height", diameter - 150 + "px");
+
+      function mouseover(d) {
+        // bring to front
+        d3.selectAll('.links .link').sort(function (a, b) { return d.related_links.indexOf(a.id); });
+
+        for (var i = 0; i < d.related_nodes.length; i++) {
+          d3.select('#' + d.related_nodes[i]).classed('highlight', true);
+          d3.select('#' + d.related_nodes[i] + '-txt').attr("font-weight", 'bold');
+        }
+
+        for (var i = 0; i < d.related_links.length; i++)
+          d3.select('#' + d.related_links[i])
+            .attr('stroke-width', '1.5px')
+            .style('opacity', 1);
+      }
+
+      function mouseout(d) {
+        for (var i = 0; i < d.related_nodes.length; i++) {
+          d3.select('#' + d.related_nodes[i]).classed('highlight', false);
+          d3.select('#' + d.related_nodes[i] + '-txt').attr("font-weight", 'normal');
+        }
+
+        for (var i = 0; i < d.related_links.length; i++)
+          d3.select('#' + d.related_links[i])
+            .attr('stroke-width', link_width)
+            .style('opacity', 0.15);
       }
 
     }

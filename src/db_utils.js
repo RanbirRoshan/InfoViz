@@ -33,7 +33,7 @@ exports.MedDSInteraction = function (medList, DSList, response, driver) {
     DSList = DSList.split(",")
 
     console.log("DSList: ", DSList)
-    console.log("DSList: ", medList)
+    console.log("MedList: ", medList)
     list = []
     if (medList.length == 0 || DSList.length == 0) {
         response.send(list)
@@ -62,7 +62,7 @@ exports.MedDSInteraction = function (medList, DSList, response, driver) {
         result.records.forEach(function (data) {
             list.push(data._fields[0].properties.name)
         })
-        console.log(result)
+        console.log("Varun", [primary, Array.from(new Set(list))])
         response.send([primary, Array.from(new Set(list))])
         session.close();
     }
