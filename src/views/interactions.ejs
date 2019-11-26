@@ -52,7 +52,7 @@
   }
 </style>
 <div class="container">
-  <div class="alert alert-warning mt-2 error-message text-center" role="alert">
+  <div class="row mt-3">
 
   </div>
   <div class="row mt-3">
@@ -150,10 +150,13 @@
     <div class="col-md-10 graph"></div>
     <!-- <div class="col-md-2"></div> -->
   </div>
+
+
 </div>
 <script>
   $(document).ready(function () {
     // var interactionTwoValues = [];
+
     $('.error-message').hide();
     $('.hide').hide();
     $('.drug-supplement').hide();
@@ -228,6 +231,26 @@
         $('.normal').show();
         $('.empty-div').hide();
       }
+      if (interactionOne == "dsp" && interactionTwo == "Drugs") {
+
+        $('.drug-supplement').show();
+        $('.normal').hide();
+        $("#interaction-one-list").empty();
+        $("#interaction-two-list").empty();
+
+      } else {
+        $('.drug-supplement').hide();
+        $('.normal').show();
+        $('.empty-div').hide();
+      }
+    });
+
+    $("#interaction-two").on("change", function () {
+      var interactionOne = $("#interaction-one").val();
+      var interactionTwo = $("#interaction-two").val();
+      if (interactionOne == "dsp" && interactionTwo == "Ingredients") {
+        $(".interaction-two-col").hide();
+      }
     })
 
     var values = {
@@ -264,10 +287,7 @@
     });
 
     $("#interaction-two-name").on("focus change keydown", function () {
-      if ($('#interaction-one-name').val() == '') {
-        $('.error-message').html('Please add ' + $('#interaction-one').val());
-        $('.error-message').show();
-      } else if ($('#interaction-two').val() != '') {
+      if ($('#interaction-two').val() != '') {
         var interactionTwo = $("#interaction-two").val();
         var interactioTwoName = $("#interaction-two-name").val();
         $("#interaction-two-list").empty();
@@ -326,23 +346,37 @@
           });
 
         } else if (interactionOne == 'ingredient' && interactionTwo == 'Adverse Reactions') {
-          console.log("now");
+
           $.ajax({
             type: 'GET',
             crossDomain: true,
             // dataType: 'jsonp',
-            url: 'http://localhost:8080/IngredientEffectiveFor?type=3&name=' + interactionOneName,
+            url: 'http://localhost:8080/IngredientHasAdverseReaction?type=3&name=' + interactionOneName,
             success: function (jsondata) {
               data = convertToTreeFormat(interactionOneName, jsondata.sort());
               visualizeTreeData(data);
             }
           });
 
+        } else if (interactionOne == "dsp" && interactionTwo == "Ingredients") {
+
+          $.ajax({
+            type: 'GET',
+            crossDomain: true,
+            // dataType: 'jsonp',
+            url: 'http://localhost:8080/DSPIngredients?type=1&name=' + interactionOneName,
+            success: function (jsondata) {
+              data = convertToTreeFormat(interactionOneName, jsondata.sort());
+              console.log(data)
+              visualizeTreeData(data);
+            }
+          });
         }
       }
     });
 
     $('.add-button-drug').on("click", function () {
+
       var interactionOneName = $("#interaction-one-name").val();
       if (interactionOneName != '') {
         drugs.push(interactionOneName);
@@ -430,7 +464,7 @@
     function visualizeTreeData(data) {
       var margin = { top: 20, right: 120, bottom: 20, left: 200 },
         width = 960 - margin.right - margin.left,
-        height = (data[0].children.length*26) - margin.top - margin.bottom;
+        height = (data[0].children.length * 40) - margin.top - margin.bottom;
 
       var i = 0;
 
@@ -481,7 +515,10 @@
 
         nodeEnter.append("circle")
           .attr("r", 10)
-          .style("fill", "#fff");
+          .style("fill", "#fff")
+          .on("click", function (d) {
+            console.log(d);
+          })
 
         nodeEnter.append("text")
           .attr("class", "node-text")
@@ -504,8 +541,8 @@
         link.enter().insert("path", "g")
           .attr("class", "tree-link")
           .attr("d", d3.linkHorizontal()
-             .y(function (d) { return d.x; })
-             .x(function (d) { return d.y; }));
+            .y(function (d) { return d.x; })
+            .x(function (d) { return d.y; }));
 
 
         // function wrap(text, width) {
