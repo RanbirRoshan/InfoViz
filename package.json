@@ -27,5 +27,8 @@
     "neo4j-driver": "^1.7.6",
     "node-neo4j": "^2.0.3",
     "path": "^0.12.7"
+  },
+  "devDependencies" : {
+    "nodemon": "^2.0.1"
   }
 }

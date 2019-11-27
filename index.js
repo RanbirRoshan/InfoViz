@@ -135,5 +135,5 @@ app.get("/overview", function (req, res) {
 })
 
 app.listen(8080);
-console.log("server started")
+console.log("Server started. Available at http://localhost:8080/app")
 module.exports = app
