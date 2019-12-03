@@ -151,7 +151,6 @@
     <!-- <div class="col-md-2"></div> -->
   </div>
 </div>
-<script src="../context-menu.min.js" type="text/javascript"></script>
 <script>
   $(document).ready(function () {
     // var interactionTwoValues = [];
@@ -530,37 +529,6 @@
 
         // Normalize for fixed-depth.
         nodes.forEach(function (d) { d.y = d.depth * 180; });
-
-       // Add click context menu handler for each node
-       nodes.forEach(function(n){
-        var menu = [{
-        name: 'create',
-        img: 'images/create.png',
-        title: 'create button',
-        fun: function () {
-            alert('i am add button')
-        }
-    }, {
-        name: 'update',
-        img: 'images/update.png',
-        title: 'update button',
-        fun: function () {
-            alert('i am update button')
-        }
-    }, {
-        name: 'delete',
-        img: 'images/delete.png',
-        title: 'delete button',
-        fun: function () {
-            alert('i am delete button')
-        }
-    }];
-
-    
-//Calling context menu
- $('.node').contextMenu(menu);
-
-       });
        
  
 
