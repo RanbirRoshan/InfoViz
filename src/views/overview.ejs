@@ -302,7 +302,7 @@
           type: 'GET',
           crossDomain: true,
           // dataType: 'jsonp',
-          url: 'http://localhost:8080/KeyWords?type=' + values[interactionOne] + '&name=' + interactionOneName,
+          url: 'KeyWords?type=' + values[interactionOne] + '&name=' + interactionOneName,
           success: function (jsondata) {
             $("#interaction-one-list").empty();
             $.each(jsondata, function (key, value) {
@@ -484,7 +484,7 @@
         $.ajax({
           type: 'GET',
           crossDomain: true,
-          url: 'http://localhost:8080/SupVsMed?drug=' + drug + '&supp=' + supplements1,
+          url: 'SupVsMed?drug=' + drug + '&supp=' + supplements1,
           success: function (jsondata1) {
             // console.log("Before", jsondata1)
             data.push(jsondata1);
