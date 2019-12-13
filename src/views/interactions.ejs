@@ -50,15 +50,10 @@
   }
 </style>
 <div class="container">
-<<<<<<< HEAD
-  <div class="alert alert-warning mt-2 error-message text-center" role="alert">
-
-=======
   <div class="row mt-3">
     <div class="alert alert-info info-message offset-md-3 col-md-6">
       Please select from the first dropdown
     </div>
->>>>>>> eb7fafd51e1d12ab07f85c544479bf789f2c8800
   </div>
   <div class="row mt-3">
     <div class="col-md-3 offset-md-1">
@@ -100,12 +95,6 @@
   <div class="row mt-3 hide">
     <div class="col-md-3 offset-md-1 remove-content">
       <div class="form-group">
-<<<<<<< HEAD
-        <input type="text" class="form-control" id="interaction-one-name" list="interaction-one-list"
-          name="interaction-one-name" autocomplete="off">
-        <datalist id="interaction-one-list">
-        </datalist>
-=======
         <input
           type="text"
           class="form-control"
@@ -116,7 +105,6 @@
           placeholder="Please Type"
         />
         <datalist id="interaction-one-list"> </datalist>
->>>>>>> eb7fafd51e1d12ab07f85c544479bf789f2c8800
       </div>
     </div>
     <!-- Drug and Supplement -->
@@ -128,12 +116,6 @@
     <div class="col-md-3 empty-div remove-content normal"></div>
     <div class="col-md-4 interaction-two-col remove-content">
       <div class="form-group col-md-10">
-<<<<<<< HEAD
-        <input type="text" class="form-control" id="interaction-two-name" list="interaction-two-list"
-          name="interaction-two-name" autocomplete="off">
-        <datalist id="interaction-two-list">
-        </datalist>
-=======
         <input
           type="text"
           class="form-control"
@@ -144,7 +126,6 @@
           placeholder="Please Type"
         />
         <datalist id="interaction-two-list"> </datalist>
->>>>>>> eb7fafd51e1d12ab07f85c544479bf789f2c8800
       </div>
     </div>
     <!-- Drug and Supplement -->
@@ -194,17 +175,11 @@
 <script>
   $(document).ready(function() {
     // var interactionTwoValues = [];
-<<<<<<< HEAD
-    $('.error-message').hide();
-    $('.hide').hide();
-    $('.drug-supplement').hide();
-=======
 
     $(".error-message").hide();
     $(".hide").hide();
     $(".drug-supplement").hide();
     $(".alert-row").hide();
->>>>>>> eb7fafd51e1d12ab07f85c544479bf789f2c8800
     var relationship = {
       drug: {
         interacts_with: ["Dietary Supplements"]
@@ -217,15 +192,6 @@
         is_effective_for: ["Disease"],
         has: ["Adverse Reactions"]
       }
-<<<<<<< HEAD
-    }
-
-
-    $('#interaction-one').change(function () {
-      $('.hide').hide();
-      $('.graph').html('');
-      var interactionOne = $('#interaction-one').val();
-=======
     };
 
     $("#interaction-one").change(function() {
@@ -237,7 +203,6 @@
       supplements = [];
       drugs = [];
       var interactionOne = $("#interaction-one").val();
->>>>>>> eb7fafd51e1d12ab07f85c544479bf789f2c8800
 
       var optionString = "";
       $("#relationship").html("");
@@ -298,12 +263,8 @@
       $(".info-message-input").text("Please enter the name of a " + alertName);
     });
 
-<<<<<<< HEAD
-    $("#interaction-two").on("change", function () {
-=======
     $("#interaction-two").on("change", function() {
       $("#interaction-two-name").val("");
->>>>>>> eb7fafd51e1d12ab07f85c544479bf789f2c8800
       var interactionOne = $("#interaction-one").val();
       var interactionTwo = $("#interaction-two").val();
       if (interactionOne == "drug" && interactionTwo == "Dietary Supplements") {
@@ -311,15 +272,6 @@
         $(".normal").hide();
         $("#interaction-one-list").empty();
         $("#interaction-two-list").empty();
-<<<<<<< HEAD
-
-      } else {
-        $('.drug-supplement').hide();
-        $('.normal').show();
-        $('.empty-div').hide();
-      }
-    })
-=======
       } else if (interactionOne == "dsp" && interactionTwo == "Drugs") {
         $(".drug-supplement").show();
         $(".normal").hide();
@@ -352,7 +304,6 @@
         $(".interaction-two-col").hide();
       }
     });
->>>>>>> eb7fafd51e1d12ab07f85c544479bf789f2c8800
 
     var values = {
       dsp: 1,
@@ -376,17 +327,12 @@
           type: "GET",
           crossDomain: true,
           // dataType: 'jsonp',
-<<<<<<< HEAD
-          url: 'KeyWords?type=' + values[interactionOne] + '&name=' + interactionOneName,
-          success: function (jsondata) {
-=======
           url:
             "http://localhost:8080/KeyWords?type=" +
             values[interactionOne] +
             "&name=" +
             interactionOneName,
           success: function(jsondata) {
->>>>>>> eb7fafd51e1d12ab07f85c544479bf789f2c8800
             $("#interaction-one-list").empty();
             $.each(jsondata, function(key, value) {
               $("#interaction-one-list").append(
@@ -398,16 +344,8 @@
       }
     });
 
-<<<<<<< HEAD
-    $("#interaction-two-name").on("focus change keydown", function () {
-      if ($('#interaction-one-name').val() == '') {
-        $('.error-message').html('Please add ' + $('#interaction-one').val());
-        $('.error-message').show();
-      } else if ($('#interaction-two').val() != '') {
-=======
     $("#interaction-two-name").on("focus change keydown", function() {
       if ($("#interaction-two").val() != "") {
->>>>>>> eb7fafd51e1d12ab07f85c544479bf789f2c8800
         var interactionTwo = $("#interaction-two").val();
         var interactioTwoName = $("#interaction-two-name").val();
         $("#interaction-two-list").empty();
@@ -420,17 +358,12 @@
             type: "GET",
             crossDomain: true,
             // dataType: 'jsonp',
-<<<<<<< HEAD
-            url: 'KeyWords?type=' + interactionTwoMapping[interactionTwo] + '&name=' + interactioTwoName,
-            success: function (jsondata) {
-=======
             url:
               "http://localhost:8080/KeyWords?type=" +
               interactionTwoMapping[interactionTwo] +
               "&name=" +
               interactioTwoName,
             success: function(jsondata) {
->>>>>>> eb7fafd51e1d12ab07f85c544479bf789f2c8800
               $("#interaction-two-list").empty();
               $.each(jsondata, function(key, value) {
                 $("#interaction-two-list").append(
@@ -462,11 +395,6 @@
             type: "GET",
             crossDomain: true,
             // dataType: 'jsonp',
-<<<<<<< HEAD
-            url: 'DSPAdverseReaction?type=1&name=' + interactionOneName,
-            success: function (jsondata) {
-
-=======
             url:
               "http://localhost:8080/DSPAdverseReaction?type=1&name=" +
               interactionOneName,
@@ -476,7 +404,6 @@
                   "<h5 style='margin-left: 250px; margin-top:200px;'> Data not available! </h5>"
                 );
               }
->>>>>>> eb7fafd51e1d12ab07f85c544479bf789f2c8800
               data = convertToTreeFormat(interactionOneName, jsondata.sort());
               visualizeTreeData(data);
             }
@@ -490,10 +417,6 @@
             type: "GET",
             crossDomain: true,
             // dataType: 'jsonp',
-<<<<<<< HEAD
-            url: 'IngredientEffectiveFor?type=3&name=' + interactionOneName,
-            success: function (jsondata) {
-=======
             url:
               "http://localhost:8080/IngredientEffectiveFor?type=3&name=" +
               interactionOneName,
@@ -503,29 +426,18 @@
                   "<h5 style='margin-left: 250px; margin-top:200px;'> Data not available! </h5>"
                 );
               }
->>>>>>> eb7fafd51e1d12ab07f85c544479bf789f2c8800
               data = convertToTreeFormat(interactionOneName, jsondata.sort());
               visualizeTreeData(data);
             }
           });
-<<<<<<< HEAD
-
-        } else if (interactionOne == 'ingredient' && interactionTwo == 'Adverse Reactions') {
-          console.log("now");
-=======
         } else if (
           interactionOne == "ingredient" &&
           interactionTwo == "Adverse Reactions"
         ) {
->>>>>>> eb7fafd51e1d12ab07f85c544479bf789f2c8800
           $.ajax({
             type: "GET",
             crossDomain: true,
             // dataType: 'jsonp',
-<<<<<<< HEAD
-            url: 'IngredientEffectiveFor?type=3&name=' + interactionOneName,
-            success: function (jsondata) {
-=======
             url:
               "http://localhost:8080/IngredientHasAdverseReaction?type=3&name=" +
               interactionOneName,
@@ -535,14 +447,10 @@
                   "<h5 style='margin-left: 250px; margin-top:200px;'> Data not available! </h5>"
                 );
               }
->>>>>>> eb7fafd51e1d12ab07f85c544479bf789f2c8800
               data = convertToTreeFormat(interactionOneName, jsondata.sort());
               visualizeTreeData(data);
             }
           });
-<<<<<<< HEAD
-
-=======
         } else if (interactionOne == "dsp" && interactionTwo == "Ingredients") {
           $.ajax({
             type: "GET",
@@ -562,34 +470,10 @@
               visualizeTreeData(data);
             }
           });
->>>>>>> eb7fafd51e1d12ab07f85c544479bf789f2c8800
         }
       }
     });
 
-<<<<<<< HEAD
-    $('.add-button-drug').on("click", function () {
-      var interactionOneName = $("#interaction-one-name").val();
-      if (interactionOneName != '') {
-        drugs.push(interactionOneName);
-        $('#interaction-one-list').empty();
-        // $("#interaction-one-name").val('');
-        var drugs1 = Array.from(new Set(drugs));
-        var supplements1 = Array.from(new Set(supplements))
-        DrugSupplementAPI(drugs1, supplements1);
-      }
-    });
-
-    $('.add-button-supplement').on("click", function () {
-      var interactionTwoName = $("#interaction-two-name").val();
-      if (interactionTwoName != '') {
-        supplements.push(interactionTwoName);
-        $('#interaction-two-list').empty();
-        var supplements1 = Array.from(new Set(supplements))
-        var drugs1 = Array.from(new Set(drugs));
-        // $("#interaction-two-name").val('');
-        DrugSupplementAPI(drugs1, supplements1);
-=======
     $(".add-button-drug").on("click", function() {
       var interactionOne = $("#interaction-one").val();
       if (
@@ -649,7 +533,6 @@
           // $("#interaction-two-name").val('');
           DrugSupplementAPI(drugs1, supplements1);
         }
->>>>>>> eb7fafd51e1d12ab07f85c544479bf789f2c8800
       }
     });
 
@@ -664,11 +547,6 @@
         $.ajax({
           type: "GET",
           crossDomain: true,
-<<<<<<< HEAD
-          url: 'SupVsMed?drug=' + drug + '&supp=' + supplements1,
-          success: function (jsondata1) {
-            console.log("Before", jsondata1)
-=======
           url:
             "http://localhost:8080/SupVsMed?drug=" +
             drug +
@@ -676,7 +554,6 @@
             supplements1,
           success: function(jsondata1) {
             console.log("Before", jsondata1);
->>>>>>> eb7fafd51e1d12ab07f85c544479bf789f2c8800
             data.push(jsondata1);
             common_data = common_data + jsondata1[1];
             data_rec = data_rec + 1;
@@ -700,12 +577,9 @@
         });
       });
 
-<<<<<<< HEAD
-=======
       // if($("#interaction-one").val() == "dsp" && $("#interaction-two").val() == "Drugs"){
 
       // }
->>>>>>> eb7fafd51e1d12ab07f85c544479bf789f2c8800
     }
 
     function capitalizeFirstLetter(string) {
@@ -735,15 +609,9 @@
     }
 
     function visualizeTreeData(data) {
-<<<<<<< HEAD
-      var margin = { top: 20, right: 120, bottom: 20, left: 200 },
-        width = 960 - margin.right - margin.left,
-        height = (data[0].children.length*26) - margin.top - margin.bottom;
-=======
       var margin = { top: 20, right: 120, bottom: 20, left: 300 },
         width = 960 - margin.right - margin.left,
         height = data[0].children.length * 40 - margin.top - margin.bottom;
->>>>>>> eb7fafd51e1d12ab07f85c544479bf789f2c8800
 
       var i = 0;
 
@@ -799,14 +667,10 @@
         nodeEnter
           .append("circle")
           .attr("r", 10)
-<<<<<<< HEAD
-          .style("fill", "#fff");
-=======
           .style("fill", "#fff")
           .on("click", function(d) {
             console.log(d);
           });
->>>>>>> eb7fafd51e1d12ab07f85c544479bf789f2c8800
 
         nodeEnter
           .append("text")
@@ -834,12 +698,6 @@
           .enter()
           .insert("path", "g")
           .attr("class", "tree-link")
-<<<<<<< HEAD
-          .attr("d", d3.linkHorizontal()
-             .y(function (d) { return d.x; })
-             .x(function (d) { return d.y; }));
-
-=======
           .attr(
             "d",
             d3
@@ -851,7 +709,6 @@
                 return d.y;
               })
           );
->>>>>>> eb7fafd51e1d12ab07f85c544479bf789f2c8800
 
         // function wrap(text, width) {
         //   text.each(function () {
@@ -980,7 +837,7 @@
         .range([colors.length - 1, 0])
         .clamp(true);
 
-      var diameter = 960;
+      var diameter = 930;
       var rect_width = 40;
       var rect_height = 14;
 
@@ -992,21 +849,6 @@
       var inner_y = d3
         .scaleLinear()
         .domain([0, il])
-<<<<<<< HEAD
-        .range([-(il * rect_height) / 2, (il * rect_height) / 2]);
-
-      mid = (data.outer.length / 2.0)
-      var outer_x = d3.scaleLinear()
-        .domain([0, mid, mid, data.outer.length])
-        .range([15, 170, 190, 355]);
-
-      // var outer_y = d3.scale.linear()
-      //     .domain([0, data.outer.length])
-      //     .range([0, diameter / 2 - 120]);
-      var outer_y = d3.scaleLinear()
-        .domain([0, ol])
-        .range([-(ol * rect_height) / 2, (ol * rect_height) / 2]);
-=======
         .range([-(il * rect_height), il * rect_height]);
 
       mid = data.outer.length / 2.0;
@@ -1021,7 +863,6 @@
         d.y = outer_y(i);
         return d;
       });
->>>>>>> eb7fafd51e1d12ab07f85c544479bf789f2c8800
 
       // setup positioning
       data.outer = data.outer.map(function(d, i) {
@@ -1122,13 +963,6 @@
         .on("mouseover", mouseover)
         .on("mouseout", mouseout);
 
-<<<<<<< HEAD
-      onode.append("rect")
-        .attr('width', rect_width * 2.5)
-        .attr('height', rect_height)
-        .attr('id', function (d) { return d.id; })
-        .attr('fill', function (d) { return "#ffffff"; });
-=======
       onode
         .append("rect")
         .attr("width", rect_width * 8)
@@ -1139,7 +973,6 @@
         .attr("fill", function(d) {
           return "#ffffff";
         });
->>>>>>> eb7fafd51e1d12ab07f85c544479bf789f2c8800
 
       // onode.append("circle")
       //     .attr('r', 20)
@@ -1178,13 +1011,6 @@
         .on("mouseover", mouseover)
         .on("mouseout", mouseout);
 
-<<<<<<< HEAD
-      inode.append('rect')
-        .attr('width', rect_width)
-        .attr('height', rect_height)
-        .attr('id', function (d) { return d.id; })
-        .attr('fill', function (d) { return "#ffffff"; });
-=======
       inode
         .append("rect")
         .attr("width", rect_width * 4)
@@ -1195,7 +1021,6 @@
         .attr("fill", function(d) {
           return "#ffffff";
         });
->>>>>>> eb7fafd51e1d12ab07f85c544479bf789f2c8800
 
       inode
         .append("text")

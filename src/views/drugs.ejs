@@ -63,7 +63,7 @@
         type: 'GET',
         crossDomain: true,
         // dataType: 'jsonp',
-        url: 'KeyWords?type=2&name=' + inputName,
+        url: 'http://localhost:8080/KeyWords?type=2&name=' + inputName,
         success: function (jsondata) {
           console.log(jsondata);
           $("#ingredients").empty();
@@ -84,7 +84,7 @@
         type: 'GET',
         crossDomain: true,
         // dataType: 'jsonp',
-        url: 'detail?type=2&name=' + ingredient,
+        url: 'http://localhost:8080/detail?type=2&name=' + ingredient,
         success: function (data) {
           $('.overview-relationship').show();
           $('.input-ingredient').val('');
@@ -114,7 +114,7 @@
         type: 'GET',
         crossDomain: true,
         // dataType: 'jsonp',
-        url: 'DrugInteractWithIngredient?type=2&name=' + ingredient,
+        url: 'http://localhost:8080/DrugInteractWithIngredient?type=2&name=' + ingredient,
         success: function (data) {
           console.log("Is effective for", data);
           var arr = data
@@ -130,7 +130,7 @@
         type: 'GET',
         crossDomain: true,
         // dataType: 'jsonp',
-        url: 'DrugInteractWithSuppliment?type=2&name=' + ingredient,
+        url: 'http://localhost:8080/DrugInteractWithSuppliment?type=2&name=' + ingredient,
         success: function (data) {
           console.log("Is component of", data);
           var num = Math.floor(Math.random() * 30)
