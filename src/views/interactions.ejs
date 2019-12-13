@@ -328,7 +328,7 @@
           crossDomain: true,
           // dataType: 'jsonp',
           url:
-            "http://localhost:8080/KeyWords?type=" +
+            "KeyWords?type=" +
             values[interactionOne] +
             "&name=" +
             interactionOneName,
@@ -359,7 +359,7 @@
             crossDomain: true,
             // dataType: 'jsonp',
             url:
-              "http://localhost:8080/KeyWords?type=" +
+              "KeyWords?type=" +
               interactionTwoMapping[interactionTwo] +
               "&name=" +
               interactioTwoName,
@@ -396,7 +396,7 @@
             crossDomain: true,
             // dataType: 'jsonp',
             url:
-              "http://localhost:8080/DSPAdverseReaction?type=1&name=" +
+              "DSPAdverseReaction?type=1&name=" +
               interactionOneName,
             success: function(jsondata) {
               if (jsondata.length == 0) {
@@ -418,7 +418,7 @@
             crossDomain: true,
             // dataType: 'jsonp',
             url:
-              "http://localhost:8080/IngredientEffectiveFor?type=3&name=" +
+              "IngredientEffectiveFor?type=3&name=" +
               interactionOneName,
             success: function(jsondata) {
               if (jsondata.length == 0) {
@@ -439,7 +439,7 @@
             crossDomain: true,
             // dataType: 'jsonp',
             url:
-              "http://localhost:8080/IngredientHasAdverseReaction?type=3&name=" +
+              "IngredientHasAdverseReaction?type=3&name=" +
               interactionOneName,
             success: function(jsondata) {
               if (jsondata.length == 0) {
@@ -457,7 +457,7 @@
             crossDomain: true,
             // dataType: 'jsonp',
             url:
-              "http://localhost:8080/DSPIngredients?type=1&name=" +
+              "DSPIngredients?type=1&name=" +
               interactionOneName,
             success: function(jsondata) {
               if (jsondata.length == 0) {
@@ -548,7 +548,7 @@
           type: "GET",
           crossDomain: true,
           url:
-            "http://localhost:8080/SupVsMed?drug=" +
+            "SupVsMed?drug=" +
             drug +
             "&supp=" +
             supplements1,

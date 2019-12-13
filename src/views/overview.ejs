@@ -302,7 +302,7 @@
           type: 'GET',
           crossDomain: true,
           // dataType: 'jsonp',
-          url: 'http://localhost:8080/KeyWords?type=' + values[interactionOne] + '&name=' + interactionOneName,
+          url: 'KeyWords?type=' + values[interactionOne] + '&name=' + interactionOneName,
           success: function (jsondata) {
             $("#interaction-one-list").empty();
             $.each(jsondata, function (key, value) {
@@ -324,7 +324,7 @@
             type: 'GET',
             crossDomain: true,
             // dataType: 'jsonp',
-            url: 'http://localhost:8080/DSPIngredients?type=1&name=' + interactionOneName,
+            url: 'DSPIngredients?type=1&name=' + interactionOneName,
             success: function (jsondata) {
               data = convertToTreeFormat(interactionOneName, jsondata.sort(), interactionOne, "Ingredients")
               console.log("called data");
@@ -345,7 +345,7 @@
             type: 'GET',
             crossDomain: true,
             // dataType: 'jsonp',
-            url: 'http://localhost:8080/DSPIngredients?type=1&name=' + interactionOneName,
+            url: 'DSPIngredients?type=1&name=' + interactionOneName,
             success: function (jsondata) {
               data = convertToTreeFormat(interactionOneName, jsondata.sort(), interactionOne, "Ingredients")
               console.log("called data");
@@ -484,7 +484,7 @@
         $.ajax({
           type: 'GET',
           crossDomain: true,
-          url: 'http://localhost:8080/SupVsMed?drug=' + drug + '&supp=' + supplements1,
+          url: 'SupVsMed?drug=' + drug + '&supp=' + supplements1,
           success: function (jsondata1) {
             // console.log("Before", jsondata1)
             data.push(jsondata1);
@@ -588,7 +588,7 @@
         type: 'GET',
         crossDomain: true,
         // dataType: 'jsonp',
-        url: 'http://localhost:8080/detail?type=' + type + '&name=' + d.data.actualName,
+        url: 'detail?type=' + type + '&name=' + d.data.actualName,
         success: function (ajaxData) {
 
           $('#accordion').html('');
@@ -617,13 +617,13 @@
         var targetType = ""
 
         if (d.data.type == 'dsp') {
-          url = 'http://localhost:8080/DSPIngredients?type=1&name=' + d.data.actualName
+          url = 'DSPIngredients?type=1&name=' + d.data.actualName
           targetType = "Ingredients"
         } else if (d.data.type == 'Ingredients') {
-          url = 'http://localhost:8080/IngredientInteractsWithDrug?type=1&name=' + d.data.actualName
+          url = 'IngredientInteractsWithDrug?type=1&name=' + d.data.actualName
           targetType = "drug"
         } else if (d.data.type == 'drug') {
-          url = 'http://localhost:8080/IngredientInteractsWithDrug?type=1&name=' + d.data.actualName
+          url = 'IngredientInteractsWithDrug?type=1&name=' + d.data.actualName
           targetType = "drug"
         }
 
@@ -1077,7 +1077,7 @@
           type: 'GET',
           crossDomain: true,
           // dataType: 'jsonp',
-          url: 'http://localhost:8080/DSPIngredients?type=1&name=' + inputName,
+          url: 'DSPIngredients?type=1&name=' + inputName,
           success: function (data) {
             jsonData = GenerateJSON(jsonData, "DSP", inputName, "SDSI", data)
             Draw();
@@ -1201,7 +1201,7 @@
             console.log("Can be expanded");
             newTargetType = explodeData.get(d.data.group);
             if (d.data.group == "SDSI" && newTargetType == "SPD") {
-              targetUrl = 'http://localhost:8080/IngredientInteractsWithDrug?type=1&name=' + d.data.key;
+              targetUrl = 'IngredientInteractsWithDrug?type=1&name=' + d.data.key;
             }
 
             $.ajax({
