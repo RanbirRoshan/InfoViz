@@ -52,7 +52,32 @@
   }
 </style>
 <div class="container">
-  <div class="alert alert-warning mt-2 error-message text-center" role="alert">
+  <!-- Overview Page -->
+  <div class="row mt-3">
+    <div class="col-md-3 offset-md-1">
+      <select name="interaction-one" id="interaction-one" class="form-control"
+        placeholder="Select Drug/ Dietary Supplement / Ingredient">
+        <option value="" selected disabled>Please Select</option>
+        <option value="drug">Drug</option>
+        <option value="dsp">Dietery Supplement</option>
+        <option value="ingredient">Ingredient</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <input type="text" name="interaction-one-name" id="interaction-one-name" class="form-control" autocomplete="off"
+          list="interaction-one-list">
+        <datalist id="interaction-one-list">
+        </datalist>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <button class="btn btn-primary" id="search-button">Search</button>
+    </div>
+  </div>
+</div>
+<!-- End of Overview Page -->
+<!-- <div class="alert alert-warning mt-2 error-message text-center" role="alert">
 
   </div>
   <div class="row mt-3">
@@ -90,36 +115,36 @@
         </datalist>
       </div>
     </div>
-    <!-- Drug and Supplement -->
-    <div class="col-md-1 drug-supplement">
-      <button class="btn btn-primary add-button-drug ">Add</button>
-    </div>
-    <div class="col-md-2 drug-supplement"></div>
-    <!-- End Drug and Supplement -->
-    <div class="col-md-3 empty-div remove-content normal">
+     Drug and Supplement
+<div class="col-md-1 drug-supplement">
+  <button class="btn btn-primary add-button-drug ">Add</button>
+</div>
+<div class="col-md-2 drug-supplement"></div>
+ End Drug and Supplement -->
+<!-- <div class="col-md-3 empty-div remove-content normal">
 
-    </div>
-    <div class="col-md-4 interaction-two-col remove-content">
-      <div class="form-group col-md-10">
-        <input type="text" class="form-control" id="interaction-two-name" list="interaction-two-list"
-          name="interaction-two-name" autocomplete="off">
-        <datalist id="interaction-two-list">
-        </datalist>
-      </div>
-    </div>
-    <!-- Drug and Supplement -->
-    <div class="col-md-1 drug-supplement">
-      <button class="btn btn-primary add-button-supplement">Add</button>
-    </div>
-    <!-- End Drug and Supplement -->
-    <div class="col-md-1">
-      <button class="btn btn-primary normal" id="search-button">Search</button>
-    </div>
-    <div class="col-md-1 normal"></div>
+</div>
+<div class="col-md-4 interaction-two-col remove-content">
+  <div class="form-group col-md-10">
+    <input type="text" class="form-control" id="interaction-two-name" list="interaction-two-list"
+      name="interaction-two-name" autocomplete="off">
+    <datalist id="interaction-two-list">
+    </datalist>
   </div>
+</div> -->
+<!-- Drug and Supplement -->
+<!-- <div class="col-md-1 drug-supplement">
+  <button class="btn btn-primary add-button-supplement">Add</button>
+</div> -->
+<!-- End Drug and Supplement -->
+<!-- <div class="col-md-1">
+  <button class="btn btn-primary normal" id="search-button">Search</button>
+</div>
+<div class="col-md-1 normal"></div>
+</div>  -->
 
-  <!-- Drug and Supplement -->
-  <!-- <div class="row mt-3 drug-supplement">
+<!-- Drug and Supplement -->
+<!-- <div class="row mt-3 drug-supplement">
     <div class="col-md-3 offset-md-1">
       <div class="form-group">
         <input type="text" class="form-control" id="interaction-one-name" list="interaction-one-list"
@@ -144,115 +169,140 @@
       <button class="btn btn-primary add-button">Add</button>
     </div>
   </div> -->
-  <!-- End Drug and Supplement -->
-  <div class="row graph-visualization">
-    <div class="col-md-2"></div>
-    <div class="col-md-10 graph"></div>
-    <!-- <div class="col-md-2"></div> -->
+<!-- End Drug and Supplement -->
+<div class="row checkbox-row">
+  <div class="col-md-2 offset-md-10">
+    <div class="form-check">
+      <input type="checkbox" class="form-check-input" id="change-view">
+      <label class="form-check-label" for="change-view">Change View</label>
+    </div>
   </div>
+  <div class="col-md-2 offset-md-10">
+    <p style="color:steelblue"><u>Note</u>: Click on the nodes to expand</p>
+  </div>
+</div>
+<div class="row graph-visualization">
+  <div class="col-md-2"></div>
+  <div class="col-md-10 graph"></div>
+  <!-- <div class="col-md-2"></div> -->
+</div>
+<div class="row accordion-view mb-4">
+
+  <div class="col-md-3"></div>
+  <div class="col-md-6">
+    <h5 class='overview-header'>Overview</h5>
+    <div id="accordion">
+
+    </div>
+  </div>
+</div>
 </div>
 <script>
   $(document).ready(function () {
+    $("#accordion").accordion({ heightStyle: "content" });
+    $('.overview-header').hide();
+    $('.checkbox-row').hide();
     // var interactionTwoValues = [];
-    $('.error-message').hide();
-    $('.hide').hide();
-    $('.drug-supplement').hide();
-    var relationship = {
-      'drug': {
-        'interacts_with': ['Ingredients', 'Dietary Supplements']
-      },
-      'dsp': {
-        'interacts_with': ['Drugs'],
-        'has': ['Ingredients', 'Adverse Reactions']
-      },
-      'ingredient': {
-        'is_effective_for': ['Disease'],
-        'has': ['Adverse Reactions']
-      }
-    }
+    // $('.error-message').hide();
+    // $('.hide').hide();
+    // $('.drug-supplement').hide();
+    // var relationship = {
+    //   'drug': {
+    //     'interacts_with': ['Ingredients', 'Dietary Supplements']
+    //   },
+    //   'dsp': {
+    //     'interacts_with': ['Drugs'],
+    //     'has': ['Ingredients', 'Adverse Reactions']
+    //   },
+    //   'ingredient': {
+    //     'is_effective_for': ['Disease'],
+    //     'has': ['Adverse Reactions']
+    //   }
+    // }
 
 
-    $('#interaction-one').change(function () {
-      $('.hide').hide();
-      $('.graph').html('');
-      var interactionOne = $('#interaction-one').val();
+    // $('#interaction-one').change(function () {
+    //   $('.hide').hide();
+    //   $('.graph').html('');
+    //   var interactionOne = $('#interaction-one').val();
 
-      var optionString = '';
-      $("#relationship").html('');
-      $("#interaction-two").html('');
-      $("#interaction-one-name").val('');
-      optionString += "<option value = '' selected disabled> Please Select </option>";
-      for (var prop in relationship[interactionOne]) {
-        optionString += "<option value='" + prop + "'>" + prop + "</option>";
-      }
-      $("#relationship").append(optionString);
-    });
-    $('#relationship').change(function () {
-      var interactionTwo = '';
-      var interactionOne = $('#interaction-one').val();
+    //   var optionString = '';
+    //   $("#relationship").html('');
+    //   $("#interaction-two").html('');
+    //   $("#interaction-one-name").val('');
+    //   optionString += "<option value = '' selected disabled> Please Select </option>";
+    //   for (var prop in relationship[interactionOne]) {
+    //     optionString += "<option value='" + prop + "'>" + prop + "</option>";
+    //   }
+    //   $("#relationship").append(optionString);
+    // });
+    // $('#relationship').change(function () {
+    //   var interactionTwo = '';
+    //   var interactionOne = $('#interaction-one').val();
 
-      $("#interaction-two").html('');
-      var relationshipVal = $("#relationship").val();
-      var interactionTwoValues = relationship[interactionOne][relationshipVal];
+    //   $("#interaction-two").html('');
+    //   var relationshipVal = $("#relationship").val();
+    //   var interactionTwoValues = relationship[interactionOne][relationshipVal];
 
-      interactionTwo += "<option value = '' selected disabled> Please Select </option>";
-      for (var i = 0; i < interactionTwoValues.length; i++) {
-        interactionTwo += "<option value='" + interactionTwoValues[i] + "'>" + interactionTwoValues[i] + "</option>";
-      }
-      $("#interaction-two").append(interactionTwo);
-    });
-    $("#interaction-two").change(function () {
-      $('.hide').show();
-      var interactionTwo = $('#interaction-two').val();
-      if (interactionTwo == 'Adverse Reactions' || interactionTwo == 'Disease') {
-        $('.interaction-two-col').hide();
-        $('.empty-div').hide();
-      } else {
-        $('.interaction-two-col').show();
-        $('.empty-div').show();
-      }
-    });
+    //   interactionTwo += "<option value = '' selected disabled> Please Select </option>";
+    //   for (var i = 0; i < interactionTwoValues.length; i++) {
+    //     interactionTwo += "<option value='" + interactionTwoValues[i] + "'>" + interactionTwoValues[i] + "</option>";
+    //   }
+    //   $("#interaction-two").append(interactionTwo);
+    // });
+    // $("#interaction-two").change(function () {
+    //   $('.hide').show();
+    //   var interactionTwo = $('#interaction-two').val();
+    //   if (interactionTwo == 'Adverse Reactions' || interactionTwo == 'Disease') {
+    //     $('.interaction-two-col').hide();
+    //     $('.empty-div').hide();
+    //   } else {
+    //     $('.interaction-two-col').show();
+    //     $('.empty-div').show();
+    //   }
+    // });
 
-    $("#interaction-two").on("change", function () {
-      var interactionOne = $("#interaction-one").val();
-      var interactionTwo = $("#interaction-two").val();
-      if (interactionOne == "drug" && interactionTwo == "Dietary Supplements") {
+    // $("#interaction-two").on("change", function () {
+    //   var interactionOne = $("#interaction-one").val();
+    //   var interactionTwo = $("#interaction-two").val();
+    //   if (interactionOne == "drug" && interactionTwo == "Dietary Supplements") {
 
-        $('.drug-supplement').show();
-        $('.normal').hide();
-        $("#interaction-one-list").empty();
-        $("#interaction-two-list").empty();
+    //     $('.drug-supplement').show();
+    //     $('.normal').hide();
+    //     $("#interaction-one-list").empty();
+    //     $("#interaction-two-list").empty();
 
-      } else {
-        $('.drug-supplement').hide();
-        $('.normal').show();
-        $('.empty-div').hide();
-      }
-    })
+    //   } else {
+    //     $('.drug-supplement').hide();
+    //     $('.normal').show();
+    //     $('.empty-div').hide();
+    //   }
+    // })
 
     var values = {
       "dsp": 1,
       "drug": 2,
       "ingredient": 3
     }
-    var interactionTwoMapping = {
-      'Ingredients': 3,
-      'Drugs': 2,
-      'Dietary Supplements': 1
-    }
+    // var interactionTwoMapping = {
+    //   'Ingredients': 3,
+    //   'Drugs': 2,
+    //   'Dietary Supplements': 1
+    // }
 
     $("#interaction-one-name").on("focus change keydown", function () {
-      console.log("interaction one name");
+      // console.log("interaction one name");
       $("#interaction-one-list").empty();
 
       var interactionOneName = $("#interaction-one-name").val();
       var interactionOne = $('#interaction-one').val();
+      console.log(interactionOneName);
       if ($('#interaction-one').val()) {
         $.ajax({
           type: 'GET',
           crossDomain: true,
           // dataType: 'jsonp',
-          url: 'KeyWords?type=' + values[interactionOne] + '&name=' + interactionOneName,
+          url: 'http://localhost:8080/KeyWords?type=' + values[interactionOne] + '&name=' + interactionOneName,
           success: function (jsondata) {
             $("#interaction-one-list").empty();
             $.each(jsondata, function (key, value) {
@@ -263,111 +313,168 @@
       }
     });
 
-    $("#interaction-two-name").on("focus change keydown", function () {
-      if ($('#interaction-one-name').val() == '') {
-        $('.error-message').html('Please add ' + $('#interaction-one').val());
-        $('.error-message').show();
-      } else if ($('#interaction-two').val() != '') {
-        var interactionTwo = $("#interaction-two").val();
-        var interactioTwoName = $("#interaction-two-name").val();
-        $("#interaction-two-list").empty();
-        if (interactionTwo == 'Ingredients' || interactionTwo == 'Drugs' || interactionTwo == 'Dietary Supplements') {
-          $.ajax({
-            type: 'GET',
-            crossDomain: true,
-            // dataType: 'jsonp',
-            url: 'KeyWords?type=' + interactionTwoMapping[interactionTwo] + '&name=' + interactioTwoName,
-            success: function (jsondata) {
-              $("#interaction-two-list").empty();
-              $.each(jsondata, function (key, value) {
-                $("#interaction-two-list").append("<option value=\"" + value + "\">")
-              })
-            }
-          });
-        }
-      }
-    });
-
-    var drugs = [];
-    var supplements = [];
     $("#search-button").on("click", function () {
-      $('.graph').html('');
-      var interactionOne = $("#interaction-one").val();
-      var interactionTwo = $("#interaction-two").val();
-      var interactionOneName = $('#interaction-one-name').val();
-      var interactionTwoName = $('#interaction-two-name').val();
-      console.log(interactionTwoName, interactionOneName);
-      if ($('#interaction-one-name').val() != '' && $('#interaction-two-name').val() == '') {
+      $(".checkbox-row").show();
+      var interactionOne = $('#interaction-one').val();
+      var interactionOneName = $("#interaction-one-name").val();
 
-        if (interactionOne == 'dsp' && interactionTwo == 'Adverse Reactions') {
+      if (interactionOne && interactionOneName) {
+        if (interactionOne == "dsp") {
           $.ajax({
             type: 'GET',
             crossDomain: true,
             // dataType: 'jsonp',
-            url: 'DSPAdverseReaction?type=1&name=' + interactionOneName,
+            url: 'http://localhost:8080/DSPIngredients?type=1&name=' + interactionOneName,
             success: function (jsondata) {
-
-              data = convertToTreeFormat(interactionOneName, jsondata.sort(), interactionOne, interactionTwo);
+              data = convertToTreeFormat(interactionOneName, jsondata.sort(), interactionOne, "Ingredients")
+              console.log("called data");
               visualizeTreeData(data);
             }
           });
-
-        } else if (interactionOne == 'ingredient' && interactionTwo == 'Disease') {
-          console.log("now");
-          $.ajax({
-            type: 'GET',
-            crossDomain: true,
-            // dataType: 'jsonp',
-            url: 'IngredientEffectiveFor?type=3&name=' + interactionOneName,
-            success: function (jsondata) {
-              data = convertToTreeFormat(interactionOneName, jsondata.sort());
-              visualizeTreeData(data);
-            }
-          });
-
-        } else if (interactionOne == 'ingredient' && interactionTwo == 'Adverse Reactions') {
-          console.log("now");
-          $.ajax({
-            type: 'GET',
-            crossDomain: true,
-            // dataType: 'jsonp',
-            url: 'IngredientEffectiveFor?type=3&name=' + interactionOneName,
-            success: function (jsondata) {
-              data = convertToTreeFormat(interactionOneName, jsondata.sort());
-              visualizeTreeData(data);
-            }
-          });
-
         }
       }
-    });
+    })
 
-    $('.add-button-drug').on("click", function () {
+    function changeToTreeView() {
+      var interactionOne = $('#interaction-one').val();
       var interactionOneName = $("#interaction-one-name").val();
-      if (interactionOneName != '') {
-        drugs.push(interactionOneName);
-        $('#interaction-one-list').empty();
-        // $("#interaction-one-name").val('');
-        var drugs1 = Array.from(new Set(drugs));
-        var supplements1 = Array.from(new Set(supplements))
-        DrugSupplementAPI(drugs1, supplements1);
-      }
-    });
 
-    $('.add-button-supplement').on("click", function () {
-      var interactionTwoName = $("#interaction-two-name").val();
-      if (interactionTwoName != '') {
-        supplements.push(interactionTwoName);
-        $('#interaction-two-list').empty();
-        var supplements1 = Array.from(new Set(supplements))
-        var drugs1 = Array.from(new Set(drugs));
-        // $("#interaction-two-name").val('');
-        DrugSupplementAPI(drugs1, supplements1);
+      if (interactionOne && interactionOneName) {
+        if (interactionOne == "dsp") {
+          $.ajax({
+            type: 'GET',
+            crossDomain: true,
+            // dataType: 'jsonp',
+            url: 'http://localhost:8080/DSPIngredients?type=1&name=' + interactionOneName,
+            success: function (jsondata) {
+              data = convertToTreeFormat(interactionOneName, jsondata.sort(), interactionOne, "Ingredients")
+              console.log("called data");
+              visualizeTreeData(data);
+            }
+          });
+        }
       }
-    });
+    }
+
+    $('input[type=checkbox]').change(
+      function () {
+        if (this.checked) {
+          $('.graph').html('');
+          $('.overview-header').hide();
+          console.log('checkbox clicked');
+          $('#accordion').html('');
+          changeview();
+        } else {
+          $('.graph').html();
+          $('#accordion').html('');
+          changeToTreeView();
+        }
+      });
+    // $("#interaction-two-name").on("focus change keydown", function () {
+    //   if ($('#interaction-one-name').val() == '') {
+    //     $('.error-message').html('Please add ' + $('#interaction-one').val());
+    //     $('.error-message').show();
+    //   } else if ($('#interaction-two').val() != '') {
+    //     var interactionTwo = $("#interaction-two").val();
+    //     var interactioTwoName = $("#interaction-two-name").val();
+    //     $("#interaction-two-list").empty();
+    //     if (interactionTwo == 'Ingredients' || interactionTwo == 'Drugs' || interactionTwo == 'Dietary Supplements') {
+    //       $.ajax({
+    //         type: 'GET',
+    //         crossDomain: true,
+    //         // dataType: 'jsonp',
+    //         url: 'http://localhost:8080/KeyWords?type=' + interactionTwoMapping[interactionTwo] + '&name=' + interactioTwoName,
+    //         success: function (jsondata) {
+    //           $("#interaction-two-list").empty();
+    //           $.each(jsondata, function (key, value) {
+    //             $("#interaction-two-list").append("<option value=\"" + value + "\">")
+    //           })
+    //         }
+    //       });
+    //     }
+    //   }
+    // });
+
+    // var drugs = [];
+    // var supplements = [];
+    // $("#search-button").on("click", function () {
+    //   $('.graph').html('');
+    //   var interactionOne = $("#interaction-one").val();
+    //   var interactionTwo = $("#interaction-two").val();
+    //   var interactionOneName = $('#interaction-one-name').val();
+    //   var interactionTwoName = $('#interaction-two-name').val();
+    //   // console.log(interactionTwoName, interactionOneName);
+    //   if ($('#interaction-one-name').val() != '' && $('#interaction-two-name').val() == '') {
+
+    //     if (interactionOne == 'dsp' && interactionTwo == 'Adverse Reactions') {
+    //       $.ajax({
+    //         type: 'GET',
+    //         crossDomain: true,
+    //         // dataType: 'jsonp',
+    //         url: 'http://localhost:8080/DSPAdverseReaction?type=1&name=' + interactionOneName,
+    //         success: function (jsondata) {
+
+    //           data = convertToTreeFormat(interactionOneName, jsondata.sort(), interactionOne, interactionTwo);
+    //           visualizeTreeData(data);
+    //         }
+    //       });
+
+    //     } else if (interactionOne == 'ingredient' && interactionTwo == 'Disease') {
+    //       // console.log("now");
+    //       $.ajax({
+    //         type: 'GET',
+    //         crossDomain: true,
+    //         // dataType: 'jsonp',
+    //         url: 'http://localhost:8080/IngredientEffectiveFor?type=3&name=' + interactionOneName,
+    //         success: function (jsondata) {
+    //           data = convertToTreeFormat(interactionOneName, jsondata.sort());
+    //           visualizeTreeData(data);
+    //         }
+    //       });
+
+    //     } else if (interactionOne == 'ingredient' && interactionTwo == 'Adverse Reactions') {
+    //       // console.log("now");
+    //       $.ajax({
+    //         type: 'GET',
+    //         crossDomain: true,
+    //         // dataType: 'jsonp',
+    //         url: 'http://localhost:8080/IngredientEffectiveFor?type=3&name=' + interactionOneName,
+    //         success: function (jsondata) {
+    //           data = convertToTreeFormat(interactionOneName, jsondata.sort());
+    //           visualizeTreeData(data);
+    //         }
+    //       });
+
+    //     }
+    //   }
+    // });
+
+    // $('.add-button-drug').on("click", function () {
+    //   var interactionOneName = $("#interaction-one-name").val();
+    //   if (interactionOneName != '') {
+    //     drugs.push(interactionOneName);
+    //     $('#interaction-one-list').empty();
+    //     // $("#interaction-one-name").val('');
+    //     var drugs1 = Array.from(new Set(drugs));
+    //     var supplements1 = Array.from(new Set(supplements))
+    //     DrugSupplementAPI(drugs1, supplements1);
+    //   }
+    // });
+
+    // $('.add-button-supplement').on("click", function () {
+    //   var interactionTwoName = $("#interaction-two-name").val();
+    //   if (interactionTwoName != '') {
+    //     supplements.push(interactionTwoName);
+    //     $('#interaction-two-list').empty();
+    //     var supplements1 = Array.from(new Set(supplements))
+    //     var drugs1 = Array.from(new Set(drugs));
+    //     // $("#interaction-two-name").val('');
+    //     DrugSupplementAPI(drugs1, supplements1);
+    //   }
+    // });
 
     function DrugSupplementAPI(drugs, supplements) {
-      console.log("d and s", drugs, supplements);
+      // console.log("d and s", drugs, supplements);
       var data = [];
       var supplements1 = supplements.join(",");
       var len = drugs.length
@@ -377,9 +484,9 @@
         $.ajax({
           type: 'GET',
           crossDomain: true,
-          url: 'SupVsMed?drug=' + drug + '&supp=' + supplements1,
+          url: 'http://localhost:8080/SupVsMed?drug=' + drug + '&supp=' + supplements1,
           success: function (jsondata1) {
-            console.log("Before", jsondata1)
+            // console.log("Before", jsondata1)
             data.push(jsondata1);
             common_data = common_data + jsondata1[1]
             data_rec = data_rec + 1
@@ -387,10 +494,10 @@
               var common_data1 = new Set(common_data);
               var common_data2 = new Set(supplements);
               var diff = Array.from(new Set([...common_data2].filter(x => !common_data1.has(x))));
-              console.log(diff)
-              console.log(common_data)
-              console.log(supplements)
-              console.log("ranbj")
+              // console.log(diff)
+              // console.log(common_data)
+              // console.log(supplements)
+              // console.log("ranbj")
               diff.forEach(function (d) {
                 data.push(["", [d]]);
               })
@@ -411,14 +518,15 @@
       var children = [];
 
       for (var i = 0; i < jsondata.length; i++) {
-        console.log(jsondata.length);
+        // console.log(jsondata.length);
         children.push({
           "name": capitalizeFirstLetter(jsondata[i].toLowerCase()),
-          "actualName": jsondata[i], 
+          "actualName": jsondata[i],
           "parent": name,
           "type": childType,
           "isExpanded": false,
-          "canExpand": true
+          "canExpand": true,
+          "isRoot": false
         });
       }
       var treeData = [{
@@ -427,72 +535,131 @@
         "parent": null,
         "children": children,
         "type": parentType,
-        "isExpanded": true
+        "isExpanded": false,
+        "isRoot": true
       }];
 
-      console.log(treeData)
+      // console.log(treeData)
       return treeData;
     }
 
-    function addToTreedata(name, jsondata, parentType, childType, treeData) {
+    function updateDataOnClick(name, jsondata, parentType, childType, existingTreedata) {
       var children = [];
 
       for (var i = 0; i < jsondata.length; i++) {
-        console.log(jsondata.length);
+        // console.log(jsondata.length);
         children.push({
           "name": capitalizeFirstLetter(jsondata[i].toLowerCase()),
-          "actualName": jsondata[i], 
+          "actualName": jsondata[i],
           "parent": name,
           "type": childType,
           "isExpanded": false,
-          "canExpand": true
+          "canExpand": true,
+          "isRoot": false
         });
       }
 
-      // var searchNode = tr
-      var treeData = [{
-        "name": capitalizeFirstLetter(name.toLowerCase()),
-        "actualName": name,
-        "parent": null,
-        "children": children,
-        "type": parentType,
-        "isExpanded": true
-      }];
-      return treeData;
+      existingTreedata.children = children
+      existingTreedata.isExpanded = true
+
+      console.log("existing tree data: ", data)
     }
 
+    function getDetails(d) {
+      var type = -1
 
+      if (d.data.type == 'dsp') {
+        type = 1
+      } else if (d.data.type == 'drug') {
+        type = 2
+      } else if (d.data.type == 'Ingredients') {
+        type = 3
+      } else if (d.data.type == 'symptom') {
+        type = 4
+      } else if (d.data.type == 'disease') {
+        type = 5
+      } else if (d.data.type == 'therapeutic class') {
+        type = 6
+      } else if (d.data.type == 'soc') {
+        type = 7
+      }
 
-    function expandNodes(d){
-      console.log("Calling expand nodes")
-      
-      if (d.data.type == 'dsp'){
+      $.ajax({
+        type: 'GET',
+        crossDomain: true,
+        // dataType: 'jsonp',
+        url: 'http://localhost:8080/detail?type=' + type + '&name=' + d.data.actualName,
+        success: function (ajaxData) {
+
+          $('#accordion').html('');
+
+          $.each(ajaxData, function (i, obj) {
+            if (i == "name" || i == "ui" || i == "umls_semantic_type") {
+              //continue
+            } else {
+              flag = true;
+              $('#accordion').append("<h3>" + i + "</h3><div><p>" + obj + "</p></div>");
+              $("#accordion").accordion('refresh');
+            }
+
+          });
+          if (flag == false) {
+            $('#accordion').append("<h5 style='margin-left:450px;'> No content available </h5>");
+          }
+          return;
+        }
+      });
+    }
+
+    function expandCollapse(d) {
+      if (d.data.isExpanded == false) {
+        var url = ""
+        var targetType = ""
+
+        if (d.data.type == 'dsp') {
+          url = 'http://localhost:8080/DSPIngredients?type=1&name=' + d.data.actualName
+          targetType = "Ingredients"
+        } else if (d.data.type == 'Ingredients') {
+          url = 'http://localhost:8080/IngredientInteractsWithDrug?type=1&name=' + d.data.actualName
+          targetType = "drug"
+        } else if (d.data.type == 'drug') {
+          url = 'http://localhost:8080/IngredientInteractsWithDrug?type=1&name=' + d.data.actualName
+          targetType = "drug"
+        }
+
         $.ajax({
           type: 'GET',
           crossDomain: true,
           // dataType: 'jsonp',
-          url: 'DSPIngredients?type=1&name=' + d.data.actualName,
+          url: url,
           success: function (ajaxData) {
-            d.data.children = []
 
-            console.log(data)
-            
+            updateDataOnClick(d.data.name, ajaxData, d.data.type, targetType, d.data)
+
+            console.log(ajaxData)
+            visualizeTreeData(data)
             return;
-            // console.log(data);
+            // // console.log(data);
             // var uniqueData = Array.from(new Set(data));
             // $('.dsp-ingredients-view #graph-3').html('');
             // myFunction(ingredient);
           }
         });
-
+      } else if (d.data.isRoot == false) {
+        d.data.children = []
+        d.data.isExpanded = false
+        visualizeTreeData(data)
       }
-      return;
     }
 
     function visualizeTreeData(data) {
-      var margin = { top: 20, right: 120, bottom: 20, left: 200 },
-        width = 960 - margin.right - margin.left,
-        height = (data[0].children.length*26) - margin.top - margin.bottom;
+      // Emptying the div because might be redrawing
+      $(".graph").html("")
+
+
+      var margin = { top: 20, right: 120, bottom: 20, left: 300 },
+        width = 1100 - margin.right - margin.left,
+        height = (data[0].children.length * 40) - margin.top - margin.bottom;
 
       var i = 0;
 
@@ -529,10 +696,7 @@
 
         // Normalize for fixed-depth.
         nodes.forEach(function (d) { d.y = d.depth * 180; });
-       
- 
-
-        console.log("Nodes", nodes)
+        // console.log("Nodes", nodes)
         // Declare the nodes…
         var node = svg.selectAll("g.node")
           .data(nodes, function (d) { return d.id || (d.id = ++i); });
@@ -547,9 +711,17 @@
         nodeEnter.append("circle")
           .attr("r", 10)
           .style("fill", "#fff")
-          .on("click", function(d) {
-            console.log("Data for expand nodes: ", d)
-            expandNodes(d)
+          .on("mouseover", function (d) {
+            $('.overview-header').show();
+            getDetails(d)
+            d3.select(this).style("fill", "steelblue");
+          })
+          .on("mouseout", function () {
+            d3.select(this).style("fill", "#fff");
+          })
+          .on("click", function (d) {
+            // console.log("Data for expand nodes: ", d)
+            expandCollapse(d)
           });
 
         nodeEnter.append("text")
@@ -563,7 +735,7 @@
           })
           .text(function (d) { return d.data.name; })
           .style("fill-opacity", 1)
-          
+
         // .call(wrap, 250);
 
         // Declare the links…
@@ -574,8 +746,8 @@
         link.enter().insert("path", "g")
           .attr("class", "tree-link")
           .attr("d", d3.linkHorizontal()
-             .y(function (d) { return d.x; })
-             .x(function (d) { return d.y; }));
+            .y(function (d) { return d.x; })
+            .x(function (d) { return d.y; }));
 
 
         // function wrap(text, width) {
@@ -606,7 +778,7 @@
 
     }
     function visualizeDrugSupplement(jsondata) {
-      console.log("final data", jsondata);
+      // console.log("final data", jsondata);
       // jd1 = [["a", ["b"]], ["cd", []], ["", ["sd"]]]
       // jsondata = jd1
 
@@ -617,16 +789,16 @@
       var outerId = [0];
 
 
-      // console.log(data.outer.reduce(function (a, b) { return a + b.related_links.length; }, 0) / data.outer.length);
-      console.log("abcdbbcdbcbdbcb")
-      console.log(jsondata, jsondata.length);
+      // // console.log(data.outer.reduce(function (a, b) { return a + b.related_links.length; }, 0) / data.outer.length);
+      // console.log("abcdbbcdbcbdbcb")
+      // console.log(jsondata, jsondata.length);
       jsondata.forEach(function (d) {
-        console.log("hi i am here")
+        // console.log("hi i am here")
         if (d == null)
           return;
 
         i = { id: 'i' + inner.length, index: inner.length, name: d[0], related_links: [] };
-        console.log(i)
+        // console.log(i)
         i.related_nodes = [i.id];
         if (i.name != "") {
           inner.push(i);
@@ -641,7 +813,7 @@
 
           if (o == null) {
             o = { name: d1, id: 'o' + outerId[0], related_links: [] };
-            console.log(o)
+            // console.log(o)
             o.related_nodes = [o.id];
             outerId[0] = outerId[0] + 1;
             if (o.name != "") {
@@ -697,6 +869,7 @@
         .clamp(true);
 
       var diameter = 960;
+      var width = diameter;
       var rect_width = 40;
       var rect_height = 14;
 
@@ -707,7 +880,7 @@
 
       var inner_y = d3.scaleLinear()
         .domain([0, il])
-        .range([-(il * rect_height) / 2, (il * rect_height) / 2]);
+        .range([-(il * rect_height), (il * rect_height)]);
 
       mid = (data.outer.length / 2.0)
       var outer_x = d3.scaleLinear()
@@ -719,7 +892,7 @@
       //     .range([0, diameter / 2 - 120]);
       var outer_y = d3.scaleLinear()
         .domain([0, ol])
-        .range([-(ol * rect_height) / 2, (ol * rect_height) / 2]);
+        .range([-(ol * rect_height), (ol * rect_height)]);
 
 
       // setup positioning
@@ -737,8 +910,8 @@
 
 
       function get_color(a, v) {
-        console.log("Color parameters" + a + "    " + v);
-        console.log(d3.interpolateRainbow(v / a))
+        // console.log("Color parameters" + a + "    " + v);
+        // console.log(d3.interpolateRainbow(v / a))
         return d3.interpolateRainbow(v / a);
         // var c = Math.round(color(name));
         //     if (isNaN(c))
@@ -766,10 +939,10 @@
       }
 
       var svg = d3.select(".graph").append("svg")
-        .attr("width", diameter)
+        .attr("width", width)
         .attr("height", diameter)
         .append("g")
-        .attr("transform", "translate(" + diameter / 3 + "," + diameter / 3 + ")");
+        .attr("transform", "translate(" + width / 3 + "," + diameter / 3 + ")");
 
 
       // links
@@ -795,7 +968,7 @@
         .on("mouseout", mouseout);
 
       onode.append("rect")
-        .attr('width', rect_width * 2.5)
+        .attr('width', rect_width * 8)
         .attr('height', rect_height)
         .attr('id', function (d) { return d.id; })
         .attr('fill', function (d) { return "#ffffff"; });
@@ -818,12 +991,12 @@
         .data(data.inner)
         .enter().append("g")
         .attr("class", "inner_node")
-        .attr("transform", function (d, i) { return "translate(" + d.x + "," + d.y + ")" })
+        .attr("transform", function (d, i) { return "translate(" + (d.x - (2 * rect_width)) + "," + d.y + ")" })
         .on("mouseover", mouseover)
         .on("mouseout", mouseout);
 
       inode.append('rect')
-        .attr('width', rect_width)
+        .attr('width', rect_width * 4)
         .attr('height', rect_height)
         .attr('id', function (d) { return d.id; })
         .attr('fill', function (d) { return "#ffffff"; });
@@ -865,6 +1038,277 @@
             .style('opacity', 0.15);
       }
 
+    }
+    function changeview() {
+      myFunction();
+      var explodeData = new Map([["SDSI", "SPD"]]);
+      var myMap = new Map();
+      var colorPos = 0;
+      var jsonData = []
+
+      function myRemoveFunction(key) {
+        removeFromJson(key, false);
+        console.log(jsonData);
+        Draw();
+      }
+
+      function removeFromJson(key, remove) {
+        var obj = jsonData.find(o => o.name == key);
+
+        if (obj == undefined)
+          return;
+
+        obj["imports"].forEach(function (item) {
+          removeFromJson(item, true);
+        });
+
+        obj["imports"] = []
+
+        if (remove) {
+          obj["useCount"] = obj["useCount"] - 1;
+          if (obj["useCount"] == 0)
+            jsonData = jsonData.filter(function (el) { return el.name != obj.name; });
+        }
+      }
+
+      function myFunction() {
+        var inputName = $("#interaction-one-name").val();
+        $.ajax({
+          type: 'GET',
+          crossDomain: true,
+          // dataType: 'jsonp',
+          url: 'http://localhost:8080/DSPIngredients?type=1&name=' + inputName,
+          success: function (data) {
+            jsonData = GenerateJSON(jsonData, "DSP", inputName, "SDSI", data)
+            Draw();
+          }
+        });
+      }
+
+      function color(d) {
+        console.log(myMap.size);
+        return d3.interpolateRainbow(myMap.get(d.source.data.name) / myMap.size);
+      }
+
+      function Draw() {
+
+        list = document.getElementsByClassName("graph")[0];
+
+        while (list.hasChildNodes()) {
+          list.removeChild(list.firstChild);
+        }
+
+        var diameter = 700,
+          radius = diameter / 2,
+          innerRadius = radius - 120;
+
+        var cluster = d3.cluster()
+          .size([360, innerRadius]);
+
+        var line = d3.radialLine()
+          .curve(d3.curveBundle.beta(0.85))
+          .radius(function (d) { return d.y; })
+          .angle(function (d) { return d.x / 180 * Math.PI; })
+          //.curve(d3.curveBasisClosed);
+          .curve(d3.curveBasis);
+        //.curve(d3.curveBundle.beta(0.5));
+        //.curve(d3.curveBundle.beta(0));
+        //.curve(d3.curveBundle.beta(1));
+        //.curve(d3.curveCardinal.tension(1));
+        //.curve(d3.curveCardinal.tension(0.5));
+        //.curve(d3.curveCardinal.tension(0));
+        //.curve(d3.curveCatmullRom.alpha(1));
+        //.curve(d3.curveCatmullRom.alpha(0));
+        //.curve(d3.curveCatmullRom.alpha(0.5));
+        //.curve(d3.curveMonotoneX);
+        //.curve(d3.curveMonotoneY);
+        //.curve(d3.curveStep);
+        //.curve(d3.curveNatural);
+        //.curve(d3.curveStepAfter);
+        //.curve(d3.curveStep);
+        //.curve(d3.curveStepBefore);
+
+        var svg = d3.select(".graph").append("svg")
+          .attr("width", diameter)
+          .attr("height", diameter)
+          .append("g")
+          .attr("transform", "translate(" + radius + "," + radius + ")");
+
+        var link = svg.append("g").selectAll(".link"),
+          node = svg.append("g").selectAll(".node");
+
+        var root = packageHierarchy(jsonData)
+          .sum(function (d) { return d.size; });
+
+        cluster(root);
+        console.log(cluster);
+
+        link = link
+          .data(packageImports(root.leaves()))
+          .enter().append("path")
+          .each(function (d) { d.source = d[0], d.target = d[d.length - 1]; })
+          .attr("class", "link")
+          .style("stroke", color)
+          .style("opacity", 0.3)
+          .attr("d", line);
+
+        node = node
+          .data(root.leaves())
+          .enter().append("text")
+          .attr("class", "node")
+          .attr("dy", "0.31em")
+          .attr("id", function (d) { return d.data.name; })
+          .attr("transform", function (d) { return "rotate(" + (d.x - 90) + ")translate(" + (d.y + 8) + ",0)" + (d.x < 180 ? "" : "rotate(180)"); })
+          .attr("text-anchor", function (d) { return d.x < 180 ? "start" : "end"; })
+          .attr("background-color", "#FFFFFF")
+          .text(function (d) { return d.data.key; })
+          .on('mouseout', function () {
+            link.style('stroke-width', 2);
+            link.style("stroke", color);
+            link.style("opacity", 0.3);
+          })
+          .on('mouseover', function (d) {
+            link.style('stroke-width', function (l) {
+              if (d === l.source || d === l.target)
+                return 4;
+              else
+                return 2;
+            });
+            link.style("stroke", color);
+            link.style("opacity", function (l) {
+              if (d === l.source || d === l.target)
+                return 1;
+              else
+                return 0.3
+            });
+          })
+          .on("click", ClickFuncCalled);
+
+        svg.append("svg:path")
+          .attr("class", "arc")
+          .attr("d", d3.arc().outerRadius(ry - 180).innerRadius(0).startAngle(0).endAngle(2 * Math.PI))
+          .on("mousedown", mousedown);
+      }
+
+      function ClickFuncCalled(d) {
+        var newData = [];
+        var newTargetType = "";
+        var targetUrl = ""
+        console.log(d.data);
+        console.log(d);
+        if (explodeData.has(d.data.group)) {
+          if (d.data.expanded == 0) {
+            console.log("Can be expanded");
+            newTargetType = explodeData.get(d.data.group);
+            if (d.data.group == "SDSI" && newTargetType == "SPD") {
+              targetUrl = 'http://localhost:8080/IngredientInteractsWithDrug?type=1&name=' + d.data.key;
+            }
+
+            $.ajax({
+              type: 'GET',
+              crossDomain: true,
+              // dataType: 'jsonp',
+              url: targetUrl,
+              success: function (data) {
+                console.log(data)
+                jsonData = GenerateJSON(jsonData, d.data.group, d.data.key, newTargetType, data)
+                Draw();
+                d.data.expanded = 1;
+                //document.getElementById(d.data.name).innerHTML = d.data.key + " (-)"
+              }
+            });
+          } else {
+            d.data.key = d.data.key
+            removeFromJson(d.data.name, false);
+            Draw();
+            d.data.expanded = 0;
+            document.getElementById(d.data.name).innerHTML = d.data.key;
+          }
+        }
+      }
+
+      // Lazily construct the package hierarchy from class names.
+      function packageHierarchy(classes) {
+
+        var map = {};
+
+        function find(name, data) {
+          var node = map[name], i;
+
+          if (!node) {
+            node = map[name] = data || { name: name, children: [] };
+
+            if (name.length) {
+              node.parent = find(name.substring(0, i = name.lastIndexOf(".")));
+              node.parent.children.push(node);
+              node.key = name.substring(i + 1);
+            }
+          }
+          return node;
+        }
+
+        classes.forEach(function (d) {
+          find(d.name, d);
+        });
+
+        return d3.hierarchy(map[""]);
+      }
+
+      // Return a list of imports for the given array of nodes.
+      function packageImports(nodes) {
+        var map = {},
+          imports = [];
+
+        // Compute a map from name to node.
+        nodes.forEach(function (d) {
+          map[d.data.name] = d;
+        });
+
+        // For each import, construct a link from the source to target node.
+        nodes.forEach(function (d) {
+          if (d.data.imports) d.data.imports.forEach(function (i) {
+            imports.push(map[d.data.name].path(map[i]));
+          });
+        });
+
+        return imports;
+      }
+
+      function GenerateJSON(CurrentJSON, SourceGroup, Source, TargetGroup, Target) {
+
+        var SrcKey = SourceGroup + "." + Source;
+
+        if (!myMap.has(SrcKey)) {
+          myMap.set(SrcKey, colorPos);
+          console.log(colorPos);
+          colorPos = colorPos + 1;
+        }
+
+        var srcObj = CurrentJSON.find(o => o.name === SrcKey);
+
+        if (srcObj == undefined) {
+          srcObj = { "name": SrcKey, "size": 1, "imports": [], "useCount": 0, "expanded": 0, "group": SourceGroup };
+          CurrentJSON.push(srcObj);
+        }
+
+        Target.forEach(function (item) {
+
+          var newKey = TargetGroup + "." + item;
+
+          var newObj = CurrentJSON.find(o => o.name === newKey);
+
+          if (newObj == undefined) {
+            newObj = { "name": newKey, "size": 1, "imports": [], "useCount": 0, "expanded": 0, "group": TargetGroup };
+            CurrentJSON.push(newObj);
+          }
+
+          srcObj["imports"].push(newKey);
+
+          newObj["useCount"] = newObj["useCount"] + 1;
+        })
+
+        return CurrentJSON;
+      }
     }
 
 

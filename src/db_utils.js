@@ -135,8 +135,20 @@ exports.GetItemDetails = function (res, type, name, driver) {
     } else if (type == 2) {
         var ret = session.run('MATCH (a:PD{name:$SearchName}) return a', { SearchName: name })
         // 3 is for ingredients
-    } else {
+    } else if (type == 3) {
         var ret = session.run('MATCH (a:SDSI{name:$SearchName}) return a', { SearchName: name })
+        // 4 is for SS
+    } else if (type == 4) {
+        var ret = session.run('MATCH (a:SS{name:$SearchName}) return a', { SearchName: name })
+        // 5 is for diseases
+    } else if (type == 5) {
+        var ret = session.run('MATCH (a:DIS{name:$SearchName}) return a', { SearchName: name })
+        // 6 is for therapeutic class
+    } else if (type == 6) {
+        var ret = session.run('MATCH (a:TC{name:$SearchName}) return a', { SearchName: name })
+        // 7 is for SOC
+    } else if (type == 7) {
+        var ret = session.run('MATCH (a:SOC{name:$SearchName}) return a', { SearchName: name })
     }
     ret.then(function (result) {
         console.log(result);

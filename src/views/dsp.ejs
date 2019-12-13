@@ -71,7 +71,7 @@
         type: 'GET',
         crossDomain: true,
         // dataType: 'jsonp',
-        url: 'KeyWords?type=1&name=' + inputName,
+        url: 'http://localhost:8080/KeyWords?type=1&name=' + inputName,
         success: function (jsondata) {
           console.log(jsondata);
           $("#ingredients").empty();
@@ -93,7 +93,7 @@
         type: 'GET',
         crossDomain: true,
         // dataType: 'jsonp',
-        url: 'detail?type=1&name=' + ingredient,
+        url: 'http://localhost:8080/detail?type=1&name=' + ingredient,
         success: function (data) {
           console.log(data)
           $('.overview-relationship').show();
@@ -124,7 +124,7 @@
         type: 'GET',
         crossDomain: true,
         // dataType: 'jsonp',
-        url: 'DSPInteractWithDrug?type=1&name=' + ingredient,
+        url: 'http://localhost:8080/DSPInteractWithDrug?type=1&name=' + ingredient,
         success: function (data) {
           console.log("Is effective for", data);
           var arr = data
@@ -138,7 +138,7 @@
         type: 'GET',
         crossDomain: true,
         // dataType: 'jsonp',
-        url: 'DSPAdverseReaction?type=1&name=' + ingredient,
+        url: 'http://localhost:8080/DSPAdverseReaction?type=1&name=' + ingredient,
         success: function (data) {
           console.log("Is component of", data);
           var num = Math.floor(Math.random() * 30)
@@ -154,7 +154,7 @@
         type: 'GET',
         crossDomain: true,
         // dataType: 'jsonp',
-        url: 'DSPIngredients?type=1&name=' + ingredient,
+        url: 'http://localhost:8080/DSPIngredients?type=1&name=' + ingredient,
         success: function (data) {
           var uniqueData = Array.from(new Set(data));
           $('.dsp-ingredients-view #graph-3').html('');

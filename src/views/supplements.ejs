@@ -212,7 +212,7 @@
         type: 'GET',
         crossDomain: true,
         // dataType: 'jsonp',
-        url: 'KeyWords?type=' + type_val + '&name=' + name_field,
+        url: 'http://localhost:8080/KeyWords?type=' + type_val + '&name=' + name_field,
         success: function (jsondata) {
 
           $("#supplements").empty();
@@ -249,7 +249,7 @@
           type: 'GET',
           crossDomain: true,
           // dataType: 'jsonp',
-          url: 'SupVsMed?drug=' + med + '&supp=' + supplementsString,
+          url: 'http://localhost:8080/SupVsMed?drug=' + med + '&supp=' + supplementsString,
           success: function (jsondata) {
             data.push(jsondata)
             console.log("Data: ", data);
