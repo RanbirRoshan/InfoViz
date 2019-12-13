@@ -67,7 +67,7 @@
 				type: 'GET',
 				crossDomain: true,
 				// dataType: 'jsonp',
-				url: 'http://localhost:8080/DSPIngredients?type=1&name=' + inputName,
+				url: 'DSPIngredients?type=1&name=' + inputName,
 				success: function (data) {
 					jsonData = GenerateJSON(jsonData, "DSP", "Met-Rx - Pure Protein Shake Vanilla Cream", "SDSI", data)
 					Draw();
@@ -191,7 +191,7 @@
 					console.log("Can be expanded");
 					newTargetType = explodeData.get(d.data.group);
 					if (d.data.group == "SDSI" && newTargetType == "SPD") {
-						targetUrl = 'http://localhost:8080/IngredientInteractsWithDrug?type=1&name=' + d.data.key;
+						targetUrl = 'IngredientInteractsWithDrug?type=1&name=' + d.data.key;
 					}
 
 					$.ajax({
