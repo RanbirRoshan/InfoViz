@@ -252,7 +252,7 @@
           type: 'GET',
           crossDomain: true,
           // dataType: 'jsonp',
-          url: 'http://localhost:8080/KeyWords?type=' + values[interactionOne] + '&name=' + interactionOneName,
+          url: 'KeyWords?type=' + values[interactionOne] + '&name=' + interactionOneName,
           success: function (jsondata) {
             $("#interaction-one-list").empty();
             $.each(jsondata, function (key, value) {
@@ -276,7 +276,7 @@
             type: 'GET',
             crossDomain: true,
             // dataType: 'jsonp',
-            url: 'http://localhost:8080/KeyWords?type=' + interactionTwoMapping[interactionTwo] + '&name=' + interactioTwoName,
+            url: 'KeyWords?type=' + interactionTwoMapping[interactionTwo] + '&name=' + interactioTwoName,
             success: function (jsondata) {
               $("#interaction-two-list").empty();
               $.each(jsondata, function (key, value) {
@@ -304,7 +304,7 @@
             type: 'GET',
             crossDomain: true,
             // dataType: 'jsonp',
-            url: 'http://localhost:8080/DSPAdverseReaction?type=1&name=' + interactionOneName,
+            url: 'DSPAdverseReaction?type=1&name=' + interactionOneName,
             success: function (jsondata) {
 
               data = convertToTreeFormat(interactionOneName, jsondata.sort());
@@ -318,7 +318,7 @@
             type: 'GET',
             crossDomain: true,
             // dataType: 'jsonp',
-            url: 'http://localhost:8080/IngredientEffectiveFor?type=3&name=' + interactionOneName,
+            url: 'IngredientEffectiveFor?type=3&name=' + interactionOneName,
             success: function (jsondata) {
               data = convertToTreeFormat(interactionOneName, jsondata.sort());
               visualizeTreeData(data);
@@ -331,7 +331,7 @@
             type: 'GET',
             crossDomain: true,
             // dataType: 'jsonp',
-            url: 'http://localhost:8080/IngredientEffectiveFor?type=3&name=' + interactionOneName,
+            url: 'IngredientEffectiveFor?type=3&name=' + interactionOneName,
             success: function (jsondata) {
               data = convertToTreeFormat(interactionOneName, jsondata.sort());
               visualizeTreeData(data);
@@ -377,7 +377,7 @@
         $.ajax({
           type: 'GET',
           crossDomain: true,
-          url: 'http://localhost:8080/SupVsMed?drug=' + drug + '&supp=' + supplements1,
+          url: 'SupVsMed?drug=' + drug + '&supp=' + supplements1,
           success: function (jsondata1) {
             console.log("Before", jsondata1)
             data.push(jsondata1);

@@ -84,7 +84,7 @@
         type: 'GET',
         crossDomain: true,
         // dataType: 'jsonp',
-        url: 'http://localhost:8080/KeyWords?type=1&name=' + inputName,
+        url: 'KeyWords?type=1&name=' + inputName,
         success: function (jsondata) {
           console.log(jsondata);
           $("#ingredients").empty();
@@ -107,7 +107,7 @@
         type: 'GET',
         crossDomain: true,
         // dataType: 'jsonp',
-        url: 'http://localhost:8080/detail?type=1&name=' + ingredient,
+        url: 'detail?type=1&name=' + ingredient,
         success: function (data) {
           console.log(data)
           $('.overview-relationship').show();
@@ -307,7 +307,7 @@
         type: 'GET',
         crossDomain: true,
         // dataType: 'jsonp',
-        url: 'http://localhost:8080/DSPInteractWithDrug?type=1&name=' + inputName,
+        url: 'DSPInteractWithDrug?type=1&name=' + inputName,
         success: function (data) {
           // var uniqueData = Array.from(new Set(data));
           $('.relationship-view #graph').html('');
@@ -323,7 +323,7 @@
         type: 'GET',
         crossDomain: true,
         // dataType: 'jsonp',
-        url: 'http://localhost:8080/DSPAdverseReaction?type=1&name=' + inputName,
+        url: 'DSPAdverseReaction?type=1&name=' + inputName,
         success: function (data) {
           // var uniqueData = Array.from(new Set(data));
           $('.supplement-relationship-view #graph-2').html('');
@@ -339,7 +339,7 @@
         type: 'GET',
         crossDomain: true,
         // dataType: 'jsonp',
-        url: 'http://localhost:8080/DSPIngredients?type=1&name=' + inputName,
+        url: 'DSPIngredients?type=1&name=' + inputName,
         success: function (data) {
           var uniqueData = Array.from(new Set(data));
           // console.log(uni)
@@ -467,7 +467,7 @@
           console.log("Can be expanded");
           newTargetType = explodeData.get(d.data.group);
           if (d.data.group == "SDSI" && newTargetType == "SPD") {
-            targetUrl = 'http://localhost:8080/IngredientInteractsWithDrug?type=1&name=' + d.data.key;
+            targetUrl = 'IngredientInteractsWithDrug?type=1&name=' + d.data.key;
           }
 
           $.ajax({

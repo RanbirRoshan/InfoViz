@@ -8,8 +8,10 @@ var neo4j = require('neo4j-driver').v1;
 var app = express();
 var cors = require('cors');
 var expressLayouts = require('express-ejs-layouts');
+var neo4jServerAddr = "18.208.166.9";
+var neo4jServerPort = "8889";
 
-var driver = neo4j.driver("bolt://18.208.166.9:8889");
+var driver = neo4j.driver("bolt://"+neo4jServerAddr+":"+neo4jServerPort);
 app.use(expressLayouts);
 app.set("views", path.join(__dirname, "/src/views"))
 app.set("view engine", "ejs")
@@ -135,5 +137,14 @@ app.get("/overview", function (req, res) {
 })
 
 app.listen(8080);
-console.log("Server started. Available at http://localhost:8080/app")
+
+var ip = require('underscore')
+    .chain(require('os').networkInterfaces())
+    .values()
+    .flatten()
+    .find({family: 'IPv4', internal: false})
+    .value()
+    .address;
+
+console.log("Server started. Available at http://"+ip+":8080/interactions")
 module.exports = app
